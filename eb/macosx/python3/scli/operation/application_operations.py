@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -16,7 +16,7 @@
 
 import logging as _logging
 
-from scli import prompt  
+from scli import prompt
 from scli.constants import ParameterName
 from scli.operation.base import OperationBase
 from scli.operation.base import OperationResult
@@ -29,19 +29,18 @@ log = _logging.getLogger('cli.op')
 
 
 class CreateApplicationOperation(OperationBase):
-
     _input_parameters = {
-                         ParameterName.AwsAccessKeyId, 
-                         ParameterName.AwsSecretAccessKey,
-                         ParameterName.ServiceEndpoint, 
-                         ParameterName.ApplicationName,
-                        }
-    
-    _output_parameters = {
-                          ParameterName.ApplicationName,
-                         }
+        ParameterName.AwsAccessKeyId,
+        ParameterName.AwsSecretAccessKey,
+        ParameterName.ServiceEndpoint,
+        ParameterName.ApplicationName,
+    }
 
-    
+    _output_parameters = {
+        ParameterName.ApplicationName,
+    }
+
+
     def execute(self, parameter_pool):
         eb_client = self._get_eb_client(parameter_pool)
         app_name = parameter_pool.get_value(ParameterName.ApplicationName, False)
@@ -52,37 +51,35 @@ class CreateApplicationOperation(OperationBase):
         except AlreadyExistException:
             log.info('Application "{0}" already exists.'.format(app_name))
             prompt.result(CreateApplicationOpMessage.AlreadyExist.format(app_name))
-   
+
             ret_result = OperationResult(self,
-                                         None, 
+                                         None,
                                          CreateApplicationOpMessage.AlreadyExist.format(app_name),
                                          None)
         else:
             log.info('Received response for CreateApplication call.')
             prompt.info(CreateApplicationOpMessage.Succeed.format(app_name))
-            self._log_api_result(self.__class__.__name__, 'CreateApplication', response.result)            
-    
+            self._log_api_result(self.__class__.__name__, 'CreateApplication', response.result)
+
             ret_result = OperationResult(self,
-                                         response.request_id, 
+                                         response.request_id,
                                          CreateApplicationOpMessage.Succeed.format(app_name),
                                          response.result)
-            
+
         return ret_result
-        
 
 
 class DeleteApplicationOperation(OperationBase):
-
     _input_parameters = {
-                         ParameterName.AwsAccessKeyId, 
-                         ParameterName.AwsSecretAccessKey,
-                         ParameterName.ServiceEndpoint, 
-                         ParameterName.ApplicationName,
-                        }
-    
+        ParameterName.AwsAccessKeyId,
+        ParameterName.AwsSecretAccessKey,
+        ParameterName.ServiceEndpoint,
+        ParameterName.ApplicationName,
+    }
+
     _output_parameters = set()
 
-    
+
     def execute(self, parameter_pool):
         eb_client = self._get_eb_client(parameter_pool)
         app_name = parameter_pool.get_value(ParameterName.ApplicationName, False)
@@ -93,22 +90,20 @@ class DeleteApplicationOperation(OperationBase):
         except OperationInProgressException:
             log.info('Deleting Application "{0}" already in progress'.format(app_name))
             prompt.result(DeleteApplicationOpMessage.AlreadyDelete.format(app_name))
-   
+
             ret_result = OperationResult(self,
-                                         None, 
+                                         None,
                                          DeleteApplicationOpMessage.AlreadyDelete.format(app_name),
                                          None)
         else:
             log.info('Received response for DeleteApplication call.')
-            self._log_api_result(self.__class__.__name__, 'DeleteApplication', response.result)            
+            self._log_api_result(self.__class__.__name__, 'DeleteApplication', response.result)
             prompt.result(DeleteApplicationOpMessage.Succeed.format(app_name))
-    
+
             ret_result = OperationResult(self,
-                                         response.request_id, 
+                                         response.request_id,
                                          DeleteApplicationOpMessage.Succeed.format(app_name),
                                          response.result)
 
-        
-            
         return ret_result
         

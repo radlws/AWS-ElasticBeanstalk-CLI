@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -16,31 +16,35 @@
 
 from lib.aws.exception import AwsServiceException
 
+
 class IamErrorCode(object):
     '''IAM error code'''
     EntityAlreadyExists = u'EntityAlreadyExists'
     NoSuchEntity = u'NoSuchEntity'
-    LimitExceeded = u'LimitExceeded'    
-    MalformedPolicyDocument = u'MalformedPolicyDocument'    
-    
+    LimitExceeded = u'LimitExceeded'
+    MalformedPolicyDocument = u'MalformedPolicyDocument'
+
 
 class IamEntityAlreadyExistsException(AwsServiceException):
     def __init__(self, ex):
         if not issubclass(ex.__class__, AwsServiceException):
             raise AttributeError(u'Must initialize from instance of AwsServiceException subclass.')
         super(IamEntityAlreadyExistsException, self).__init__(ex.message, ex.code, ex.http_code)
-        
+
+
 class IamLimitExceededException(AwsServiceException):
     def __init__(self, ex):
         if not issubclass(ex.__class__, AwsServiceException):
             raise AttributeError(u'Must initialize from instance of AwsServiceException subclass.')
         super(IamLimitExceededException, self).__init__(ex.message, ex.code, ex.http_code)
 
+
 class IamMalformedPolicyDocumentException(AwsServiceException):
     def __init__(self, ex):
         if not issubclass(ex.__class__, AwsServiceException):
             raise AttributeError(u'Must initialize from instance of AwsServiceException subclass.')
         super(IamMalformedPolicyDocumentException, self).__init__(ex.message, ex.code, ex.http_code)
+
 
 class IamNoSuchEntityException(AwsServiceException):
     def __init__(self, ex):

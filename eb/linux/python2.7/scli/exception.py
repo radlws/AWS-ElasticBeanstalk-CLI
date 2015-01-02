@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -33,14 +33,17 @@ class ApplicationNotExistError(EBSCliException):
     '''Exception raised when expected application not exists'''
     pass
 
+
 class ApplicationVersionNotExistError(EBSCliException):
     '''Exception raised when expected application version not exists'''
     pass
 
+
 class EnvironmentNotExistError(EBSCliException):
     '''Exception raised when expected environment not exists'''
     pass
-    
+
+
 class EBConfigFileNotExistError(EBSCliException):
     '''Exception raised when Elastic Beanstalk configuration file not exists.'''
     pass

@@ -7,7 +7,7 @@
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
-#   Mark Pilgrim - port to Python
+# Mark Pilgrim - port to Python
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,7 @@ from .mbcharsetprober import MultiByteCharSetProber
 from .codingstatemachine import CodingStateMachine
 from .chardistribution import GB2312DistributionAnalysis
 from .mbcssm import GB2312SMModel
+
 
 class GB2312Prober(MultiByteCharSetProber):
     def __init__(self):

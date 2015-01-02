@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -29,37 +29,36 @@ log = _logging.getLogger('cli.op')
 
 
 class CreateApplicationVersionOperation(OperationBase):
-
     _input_parameters = {
-                         ParameterName.AwsAccessKeyId, 
-                         ParameterName.AwsSecretAccessKey,
-                         ParameterName.ServiceEndpoint, 
-                         ParameterName.Region,
-                         ParameterName.SolutionStack,
-                         ParameterName.ApplicationName,
-                        }
-    
+        ParameterName.AwsAccessKeyId,
+        ParameterName.AwsSecretAccessKey,
+        ParameterName.ServiceEndpoint,
+        ParameterName.Region,
+        ParameterName.SolutionStack,
+        ParameterName.ApplicationName,
+    }
+
     _output_parameters = set()
 
     # Create Sample Application Version
     def execute(self, parameter_pool):
         eb_client = self._get_eb_client(parameter_pool)
         app_name = parameter_pool.get_value(ParameterName.ApplicationName, False)
-        
+
         try:
-            response = eb_client.create_application_version(app_name, 
+            response = eb_client.create_application_version(app_name,
                                                             ServiceDefault.DEFAULT_VERSION_NAME)
         except AlreadyExistException:
-            log.info(u'Version "{0}" of Application "{1}" already exists.'.\
+            log.info(u'Version "{0}" of Application "{1}" already exists.'. \
                      format(ServiceDefault.DEFAULT_VERSION_NAME, app_name))
             msg = CreateApplicationVersionOpMessage.AlreadyExist.format(ServiceDefault.DEFAULT_VERSION_NAME)
             prompt.info(msg)
-   
+
             ret_result = OperationResult(self, None, msg, None)
-        else:        
+        else:
             log.info(u'Received response for CreateApplicationVersion call.')
             self._log_api_result(self.__class__.__name__, u'CreateApplicationVersion', response.result)
-            msg = CreateApplicationVersionOpMessage.Succeed.format(ServiceDefault.DEFAULT_VERSION_NAME)      
+            msg = CreateApplicationVersionOpMessage.Succeed.format(ServiceDefault.DEFAULT_VERSION_NAME)
             prompt.info(msg)
 
             ret_result = OperationResult(self, response.request_id, msg, response.result)
@@ -68,73 +67,71 @@ class CreateApplicationVersionOperation(OperationBase):
 
 
 class PushApplicationVersionOperation(OperationBase):
-
     _input_parameters = {
-                         ParameterName.AwsAccessKeyId, 
-                         ParameterName.AwsSecretAccessKey,
-                         ParameterName.ServiceEndpoint, 
-                         ParameterName.Region,
-                         ParameterName.ApplicationName,
-                         ParameterName.EnvironmentName
-                        }
-    
+        ParameterName.AwsAccessKeyId,
+        ParameterName.AwsSecretAccessKey,
+        ParameterName.ServiceEndpoint,
+        ParameterName.Region,
+        ParameterName.ApplicationName,
+        ParameterName.EnvironmentName
+    }
+
     _output_parameters = set()
-   
+
     def execute(self, parameter_pool):
         eb_client = self._get_eb_client(parameter_pool)
         app_name = parameter_pool.get_value(ParameterName.ApplicationName, False)
         env_name = parameter_pool.get_value(ParameterName.EnvironmentName, False)
 
-        response = eb_client.describe_environments(app_name, env_name, include_deleted = False)
+        response = eb_client.describe_environments(app_name, env_name, include_deleted=False)
         if len(response.result) > 0:
             shell_utils.git_aws_push(False)
         else:
             prompt.error(PushApplicationVersionOpMessage.EnvNotExist.format(env_name))
 
         ret_result = OperationResult(self,
-                                     None, 
+                                     None,
                                      None,
                                      None)
-            
+
         return ret_result
 
-    
+
 class RecordApplicationVersionOperation(OperationBase):
-
     _input_parameters = {
-                         ParameterName.AwsAccessKeyId, 
-                         ParameterName.AwsSecretAccessKey,
-                         ParameterName.ServiceEndpoint, 
-                         ParameterName.Region,
-                         ParameterName.ApplicationName,
-                         ParameterName.EnvironmentName
-                        }
-    
-    _output_parameters = {
-                          ParameterName.ApplicationVersionName
-                         }
+        ParameterName.AwsAccessKeyId,
+        ParameterName.AwsSecretAccessKey,
+        ParameterName.ServiceEndpoint,
+        ParameterName.Region,
+        ParameterName.ApplicationName,
+        ParameterName.EnvironmentName
+    }
 
-   
+    _output_parameters = {
+        ParameterName.ApplicationVersionName
+    }
+
+
     def execute(self, parameter_pool):
         eb_client = self._get_eb_client(parameter_pool)
         app_name = parameter_pool.get_value(ParameterName.ApplicationName, False)
         env_name = parameter_pool.get_value(ParameterName.EnvironmentName, False)
 
-        response = eb_client.describe_environments(app_name, env_name, include_deleted = False)
-        if len(response.result) > 0:    # If have result
+        response = eb_client.describe_environments(app_name, env_name, include_deleted=False)
+        if len(response.result) > 0:  # If have result
             version_name = response.result[0].version_label
             log.info(u'Retrieved application version {0} for environment {1}'.format(version_name, env_name))
             prompt.info(RecordApplicationVersionOpMessage.Succeed.format(version_name))
             parameter_pool.put(Parameter(ParameterName.ApplicationVersionName,
                                          version_name,
                                          ParameterSource.OperationOutput),
-                               True)            
-            
+                               True)
+
         ret_result = OperationResult(self,
-                                     response.request_id, 
+                                     response.request_id,
                                      None,
                                      response.result)
-            
+
         return ret_result
 
 

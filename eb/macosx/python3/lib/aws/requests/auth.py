@@ -39,6 +39,7 @@ class AuthBase(object):
 
 class HTTPBasicAuth(AuthBase):
     """Attaches HTTP Basic Authentication to the given Request object."""
+
     def __init__(self, username, password):
         self.username = username
         self.password = password
@@ -50,6 +51,7 @@ class HTTPBasicAuth(AuthBase):
 
 class HTTPProxyAuth(HTTPBasicAuth):
     """Attaches HTTP Proxy Authenetication to a given Request object."""
+
     def __call__(self, r):
         r.headers['Proxy-Authorization'] = _basic_auth_str(self.username, self.password)
         return r
@@ -57,6 +59,7 @@ class HTTPProxyAuth(HTTPBasicAuth):
 
 class HTTPDigestAuth(AuthBase):
     """Attaches HTTP Digest Authentication to the given Request object."""
+
     def __init__(self, username, password):
         self.username = username
         self.password = password
@@ -82,12 +85,14 @@ class HTTPDigestAuth(AuthBase):
                 if isinstance(x, str):
                     x = x.encode('utf-8')
                 return hashlib.md5(x).hexdigest()
+
             hash_utf8 = md5_utf8
         elif _algorithm == 'SHA':
             def sha_utf8(x):
                 if isinstance(x, str):
                     x = x.encode('utf-8')
                 return hashlib.sha1(x).hexdigest()
+
             hash_utf8 = sha_utf8
         # XXX MD5-sess
         KD = lambda s, d: hash_utf8("%s:%s" % (s, d))
@@ -149,7 +154,6 @@ class HTTPDigestAuth(AuthBase):
         s_auth = r.headers.get('www-authenticate', '')
 
         if 'digest' in s_auth.lower() and num_401_calls < 2:
-
             setattr(self, 'num_401_calls', num_401_calls + 1)
             self.chal = parse_dict_header(s_auth.replace('Digest ', ''))
 

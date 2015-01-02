@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -15,7 +15,7 @@
 #==============================================================================
 import logging
 
-from lib.elasticbeanstalk import  eb_utils
+from lib.elasticbeanstalk import eb_utils
 from scli.constants import OptionSettingIAMProfile, ParameterName
 from scli import api_wrapper
 
@@ -26,28 +26,28 @@ def apply_instance_profile(parameter_pool, option_settings, option_to_remove):
     app_name = parameter_pool.get_value(ParameterName.ApplicationName, False)
     solution_stack = parameter_pool.get_value(ParameterName.SolutionStack, False)
     eb_client = api_wrapper.create_eb_client(parameter_pool)
-    optionDef = eb_utils.get_option_def(eb_client = eb_client, 
-                                        app_name = app_name, 
-                                        namespace = OptionSettingIAMProfile.Namespace, 
-                                        option_name = OptionSettingIAMProfile.OptionName, 
-                                        solution_stack = solution_stack)    
+    optionDef = eb_utils.get_option_def(eb_client=eb_client,
+                                        app_name=app_name,
+                                        namespace=OptionSettingIAMProfile.Namespace,
+                                        option_name=OptionSettingIAMProfile.OptionName,
+                                        solution_stack=solution_stack)
     if optionDef:
         # Solution stack supports instance profile
         profile_name = parameter_pool.get_value(ParameterName.InstanceProfileName)
-    
-        if OptionSettingIAMProfile.Namespace in option_settings\
-            and OptionSettingIAMProfile.OptionName in option_settings[OptionSettingIAMProfile.Namespace]:
-                # skip reset IAM profile name if option settings already have it
-                return
+
+        if OptionSettingIAMProfile.Namespace in option_settings \
+                and OptionSettingIAMProfile.OptionName in option_settings[OptionSettingIAMProfile.Namespace]:
+            # skip reset IAM profile name if option settings already have it
+            return
         else:
-            eb_utils.add_option_setting(option_settings = option_settings, 
-                                        option_remove = option_to_remove, 
-                                        namespace = OptionSettingIAMProfile.Namespace, 
-                                        option = OptionSettingIAMProfile.OptionName, 
-                                        value = profile_name)
+            eb_utils.add_option_setting(option_settings=option_settings,
+                                        option_remove=option_to_remove,
+                                        namespace=OptionSettingIAMProfile.Namespace,
+                                        option=OptionSettingIAMProfile.OptionName,
+                                        value=profile_name)
     else:
-        eb_utils.remove_option_setting(option_settings = option_settings,
-                                       option_remove = option_to_remove, 
-                                       namespace = OptionSettingIAMProfile.Namespace,
-                                       option = OptionSettingIAMProfile.OptionName,
-                                       add_to_remove = False)
+        eb_utils.remove_option_setting(option_settings=option_settings,
+                                       option_remove=option_to_remove,
+                                       namespace=OptionSettingIAMProfile.Namespace,
+                                       option=OptionSettingIAMProfile.OptionName,
+                                       add_to_remove=False)

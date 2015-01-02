@@ -1,14 +1,12 @@
 from subprocess import call
 from subprocess import check_call
-#from subprocess import check_output
-#from subprocess import CalledProcessError
+
 import boto
 import boto.beanstalk
-#from boto.s3 import *
 from boto.beanstalk.exception import *
 import time
 import sys
-#import os
+
 import tempfile
 import shutil
 from elastic_beanstalk_config import *
@@ -128,6 +126,7 @@ class DevTools:
         return label
 
     def bucket_name(self):
+        print "Checking AWS S3 Application Version bucket."
         try:
             response = self.eb.create_storage_location()
         except TooManyBuckets:
@@ -168,7 +167,7 @@ class DevTools:
         print "Creating EB Application Version..."
         try:
             self.eb.create_application_version(self.beanstalk_config.application_name(), version_label,
-                                                          commit_message, bucket_name, archived_file_name)
+                                               commit_message, bucket_name, archived_file_name)
             return version_label
         except TooManyApplications as e:
             sys.exit(
@@ -208,7 +207,7 @@ class DevTools:
         if not commit:
             commit = "HEAD"
 
-        print "Updating the AWS Elastic Beanstalk environment %s..." % env
+        print "Preparing to update the AWS Elastic Beanstalk environment %s..." % env
         version_label = self.version_label(commit)
         self.create_application_version(env, commit, version_label)
         self.update_environment(env, version_label)

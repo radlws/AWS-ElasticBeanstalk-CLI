@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -24,9 +24,9 @@ _DASH_PROMPT = '--'
 _EXCLA_PROMPT = '! '
 _ARROW_PROMPT = '> '
 
-class _OutputStream(object):
 
-    def __init__(self, stream = _sys.stdout):
+class _OutputStream(object):
+    def __init__(self, stream=_sys.stdout):
         self._out_stream = stream
 
     def write(self, msg):
@@ -34,7 +34,7 @@ class _OutputStream(object):
             self._out_stream.write('{0}\n'.format(msg))
             self._out_stream.flush()
 
-    def set_stream(self, stream = _sys.stdout):
+    def set_stream(self, stream=_sys.stdout):
         self._out_stream = stream
 
 
@@ -48,24 +48,27 @@ _err = _err_out
 
 _current_level = OutputLevel.Info
 
+
 def _output(stream, prompt_string, message):
     stream.write(prompt_string + message)
+
 
 def get_level():
     return _current_level
 
+
 def set_level(level):
-    global _current_level 
+    global _current_level
     global _std_out, _err_out, _null_out
     global _info, _result, _err
-    
+
     _current_level = level
-    
+
     if level == OutputLevel.Info:
         _info = _result = _std_out
         _err = _err_out
     elif level == OutputLevel.ResultOnly:
-        _info = _null_out 
+        _info = _null_out
         _result = _std_out
         _err = _err_out
     elif level == OutputLevel.Quiet:
@@ -74,21 +77,26 @@ def set_level(level):
     elif level == OutputLevel.Silence:
         _info = _result = _err = _null_out
 
+
 def plain(message):
     global _result
     _output(_result, _EMPTY_PROMPT, message)
+
 
 def action(message):
     global _info
     _output(_info, _EMPTY_PROMPT, message)
 
+
 def info(message):
     global _info
     _output(_info, _EMPTY_PROMPT, message)
-    
+
+
 def result(message):
     global _result
     _output(_result, _EMPTY_PROMPT, message)
+
 
 def error(message):
     global _err

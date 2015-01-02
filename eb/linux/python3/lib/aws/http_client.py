@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -25,11 +25,12 @@ from lib.utility import shell_utils
 
 
 HTTP_GET = 'GET'
-HTTP_POST = 'POST'   
+HTTP_POST = 'POST'
+
 
 class CaValidationHttpsConnection(HTTPSConnection):
     '''Override HTTPSConnection to verify server certification'''
-    
+
     def connect(self):
         sock = socket.create_connection((self.host, self.port),
                                         self.timeout, self.source_address)
@@ -37,17 +38,17 @@ class CaValidationHttpsConnection(HTTPSConnection):
             self.sock = sock
             self._tunnel()
 
-        self.sock = ssl.wrap_socket(sock, 
-                                    ssl_version = ssl.PROTOCOL_TLSv1,
-                                    cert_reqs = ssl.CERT_REQUIRED, 
-                                    ca_certs = os.path.join(shell_utils.ori_path(),
-                                                            CABundle.Path,
-                                                            CABundle.Name))
-        
+        self.sock = ssl.wrap_socket(sock,
+                                    ssl_version=ssl.PROTOCOL_TLSv1,
+                                    cert_reqs=ssl.CERT_REQUIRED,
+                                    ca_certs=os.path.join(shell_utils.ori_path(),
+                                                          CABundle.Path,
+                                                          CABundle.Name))
+
 
 class CaValidationHttpsHandler(HTTPSHandler):
     '''Override HTTPSHandler to use CaValidationHttpsConnection for connection'''
-            
+
     def https_open(self, req):
         return self.do_open(CaValidationHttpsConnection, req)    
     

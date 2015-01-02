@@ -11,35 +11,34 @@ import errno
 from socket import error as SocketError, timeout as SocketTimeout
 from .util import resolve_cert_reqs, resolve_ssl_version
 
-try: # Python 3
+try:  # Python 3
     from http.client import HTTPConnection, HTTPException
     from http.client import HTTP_PORT, HTTPS_PORT
 except ImportError:
     from httplib import HTTPConnection, HTTPException
     from httplib import HTTP_PORT, HTTPS_PORT
 
-try: # Python 3
+try:  # Python 3
     from queue import LifoQueue, Empty, Full
 except ImportError:
     from Queue import LifoQueue, Empty, Full
 
-
-try: # Compiled with SSL?
+try:  # Compiled with SSL?
     HTTPSConnection = object
     BaseSSLError = None
     ssl = None
 
-    try: # Python 3
+    try:  # Python 3
         from http.client import HTTPSConnection
     except ImportError:
         from httplib import HTTPSConnection
 
     import ssl
+
     BaseSSLError = ssl.SSLError
 
-except (ImportError, AttributeError): # Platform-specific: No SSL.
+except (ImportError, AttributeError):  # Platform-specific: No SSL.
     pass
-
 
 from .request import RequestMethods
 from .response import HTTPResponse
@@ -82,7 +81,6 @@ class VerifiedHTTPSConnection(HTTPSConnection):
 
     def set_cert(self, key_file=None, cert_file=None,
                  cert_reqs=None, ca_certs=None):
-
         self.key_file = key_file
         self.cert_file = cert_file
         self.cert_reqs = cert_reqs
@@ -213,7 +211,7 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
         try:
             conn = self.pool.get(block=self.block, timeout=timeout)
 
-        except AttributeError: # self.pool is None
+        except AttributeError:  # self.pool is None
             raise ClosedPoolError(self, "Pool is closed.")
 
         except Empty:
@@ -246,7 +244,7 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
         """
         try:
             self.pool.put(conn, block=False)
-            return # Everything is dandy, done.
+            return  # Everything is dandy, done.
         except AttributeError:
             # self.pool is None.
             pass
@@ -269,17 +267,17 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
         if timeout is _Default:
             timeout = self.timeout
 
-        conn.timeout = timeout # This only does anything in Py26+
+        conn.timeout = timeout  # This only does anything in Py26+
         conn.request(method, url, **httplib_request_kw)
 
         # Set timeout
-        sock = getattr(conn, 'sock', False) # AppEngine doesn't have sock attr.
+        sock = getattr(conn, 'sock', False)  # AppEngine doesn't have sock attr.
         if sock:
             sock.settimeout(timeout)
 
-        try: # Python 2.7+, use buffering of HTTP responses
+        try:  # Python 2.7+, use buffering of HTTP responses
             httplib_response = conn.getresponse(buffering=True)
-        except TypeError: # Python 2.6 and older
+        except TypeError:  # Python 2.6 and older
             httplib_response = conn.getresponse()
 
         # AppEngine doesn't have a version attr.
@@ -303,7 +301,7 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
                     conn.close()
 
         except Empty:
-            pass # Done.
+            pass  # Done.
 
     def is_same_host(self, url):
         """
@@ -433,7 +431,7 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
                                                  **response_kw)
 
             # else:
-            #     The connection will be put back into the pool when
+            # The connection will be put back into the pool when
             #     ``response.release_conn()`` is called (implicitly by
             #     ``response.read()``)
 
@@ -532,7 +530,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         log.info("Starting new HTTPS connection (%d): %s"
                  % (self.num_connections, self.host))
 
-        if not ssl: # Platform-specific: Python compiled without +ssl
+        if not ssl:  # Platform-specific: Python compiled without +ssl
             if not HTTPSConnection or HTTPSConnection is object:
                 raise SSLError("Can't connect to HTTPS URL because the SSL "
                                "module is not available.")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -15,7 +15,7 @@
 #==============================================================================
 import logging as _logging
 
-from scli import prompt  
+from scli import prompt
 from scli.constants import ParameterName
 from scli.constants import ParameterSource
 from scli.operation.base import OperationBase
@@ -27,43 +27,42 @@ log = _logging.getLogger('cli.op')
 
 
 class ListSolutionStackOperation(OperationBase):
-
     _input_parameters = {
-                         ParameterName.AwsAccessKeyId, 
-                         ParameterName.AwsSecretAccessKey,
-                         ParameterName.ServiceEndpoint, 
-                        }
-    
-    _output_parameters = {
-                          ParameterName.AvailableSolutionStacks,
-                         }
+        ParameterName.AwsAccessKeyId,
+        ParameterName.AwsSecretAccessKey,
+        ParameterName.ServiceEndpoint,
+    }
 
-    
+    _output_parameters = {
+        ParameterName.AvailableSolutionStacks,
+    }
+
+
     def execute(self, parameter_pool):
         eb_client = self._get_eb_client(parameter_pool)
-        
+
         prompt.action(ListSolutionStackOpMessage.Start)
 
         response = eb_client.list_available_solutionstacks()
-        
+
         name_set = set()
-        name_string = u'\n\t' 
+        name_string = u'\n\t'
         for stack in response.result:
             name_set.add(stack.solutionstack_name)
-            name_string +=  stack.solutionstack_name + u'\n\t'
-        
+            name_string += stack.solutionstack_name + u'\n\t'
+
         log.info(u'Available solution stacks: \n{0}'.format(name_string))
         prompt.result(ListSolutionStackOpMessage.Result.format(name_string))
 
         parameter_pool.put(Parameter(ParameterName.AvailableSolutionStacks,
                                      name_set,
-                                     ParameterSource.OperationOutput))        
-        
+                                     ParameterSource.OperationOutput))
+
         ret_result = OperationResult(self,
-                                      response.request_id, 
-                                      ListSolutionStackOpMessage.Result.format(name_string),
-                                      response.result)
-            
+                                     response.request_id,
+                                     ListSolutionStackOpMessage.Result.format(name_string),
+                                     response.result)
+
         return ret_result
     
     

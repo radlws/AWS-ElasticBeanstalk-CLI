@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -17,11 +17,12 @@
 
 from lib.utility import misc
 
+
 class Request(object):
     '''
     Convert and store IAM request parameters
     '''
-    
+
     def __init__(self):
         self._request = dict()
 
@@ -32,23 +33,23 @@ class Request(object):
                 name_list.append(unicode(name))
         else:
             name_list.append(unicode(name_set))
-        return name_list         
-    
+        return name_list
+
     def __repr__(self):
         try:
             text = u'Request API: {0}. \nParameters: [\n'.format(self._request[u'Operation'])
         except:
             text = u'Parameters:[\n'
-        
-        for key,value in self._request.iteritems():
+
+        for key, value in self._request.iteritems():
             text = text + u' {0} : {1}\n'.format(key, value)
         text = text + u']'
-        
+
         return text
-    
+
     def get_dict(self):
         return self._request
-    
+
     def set_action(self, name):
         self._request[u'Action'] = misc.to_unicode(name)
 
@@ -78,27 +79,26 @@ class Request(object):
 
     def set_policy_document(self, string):
         self._request[u'PolicyDocument'] = misc.to_unicode(string)
-    
-        
+
+
 class Response(object):
-    
-    def __init__(self, request_id, result = None, marker = None):
+    def __init__(self, request_id, result=None, marker=None):
         self._request_id = request_id
         self._result = result
         self._marker = marker
-        
+
     def __repr__(self):
-        return u'API Response.\n Request ID: {0}\n Results: {1}'.\
+        return u'API Response.\n Request ID: {0}\n Results: {1}'. \
             format(self.request_id, misc.collection_to_string(self._result))
-        
+
     @property
     def request_id(self):
         return self._request_id
-    
+
     @property
     def result(self):
         return self._result
-    
+
     @property
     def marker(self):
         return self._marker

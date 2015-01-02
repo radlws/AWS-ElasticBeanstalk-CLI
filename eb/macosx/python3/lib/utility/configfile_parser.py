@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -23,21 +23,22 @@ from contextlib import closing as _closing
 
 from scli.constants import ServiceDefault
 
+
 class SectionedConfigParser(_RawConfigParser):
     ''' 
     Derived ConfigParser.RawConfigParser to support Unicode write and case sensitive key name.
     '''
-    
+
     OPTCRE_NV = re.compile(
-        r'(?P<option>[^=\s][^=]*)'          # override _RawConfigParser re
-        r'\s*(?:'                           # to only use "=" as separator 
-        r'(?P<vi>[=])\s*'                    
-        r'(?P<value>.*))?$'                  
-        )
-    
+        r'(?P<option>[^=\s][^=]*)'  # override _RawConfigParser re
+        r'\s*(?:'  # to only use "=" as separator
+        r'(?P<vi>[=])\s*'
+        r'(?P<value>.*))?$'
+    )
+
     def __init__(self):
-        return _RawConfigParser.__init__(self, allow_no_value = True)    
-    
+        return _RawConfigParser.__init__(self, allow_no_value=True)
+
     def read(self, pathfilename):
         with codecs.open(pathfilename, 'r', encoding=ServiceDefault.CHAR_CODEC) as input_file:
             _RawConfigParser.readfp(self, input_file)
@@ -53,7 +54,7 @@ class SectionedConfigParser(_RawConfigParser):
                 output_file.write(os.linesep)
 
     def optionxform(self, optionstr):
-        return optionstr                
+        return optionstr
 
     def add_section(self, section):
         if not self.has_section(section):
@@ -66,14 +67,14 @@ class NoSectionConfigParser(_RawConfigParser):
     Also support Unicode write 
     '''
     _default_section = 'defaultsection'
-    
+
     def read(self, pathfilename):
         with codecs.open(pathfilename, 'r', encoding=ServiceDefault.CHAR_CODEC) as input_file:
             config_pairs = input_file.read()
-        with _closing(_StringIO("[{0}]{1}{2}".format(self._default_section, 
-                                                      os.linesep, 
-                                                      config_pairs))) \
-                as default_section: 
+        with _closing(_StringIO("[{0}]{1}{2}".format(self._default_section,
+                                                     os.linesep,
+                                                     config_pairs))) \
+                as default_section:
             _RawConfigParser.readfp(self, default_section)
 
     def write(self, pathfilename):
@@ -83,12 +84,12 @@ class NoSectionConfigParser(_RawConfigParser):
 
     def get(self, option):
         return _RawConfigParser.get(self, self._default_section, option)
-    
-    def set(self, option, value = None):
+
+    def set(self, option, value=None):
         if len(self.sections()) < 1:
             self.add_section(self._default_section)
         _RawConfigParser.set(self, self._default_section, option, value)
- 
+
     def has_option(self, option):
         return _RawConfigParser.has_option(self, self._default_section, option)
 

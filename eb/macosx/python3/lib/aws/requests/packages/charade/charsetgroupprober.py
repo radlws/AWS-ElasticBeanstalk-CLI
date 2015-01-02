@@ -7,7 +7,7 @@
 # the Initial Developer. All Rights Reserved.
 # 
 # Contributor(s):
-#   Mark Pilgrim - port to Python
+# Mark Pilgrim - port to Python
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -52,7 +52,7 @@ class CharSetGroupProber(CharSetProber):
             self.get_confidence()
             if not self._mBestGuessProber:
                 return None
-#                self._mBestGuessProber = self._mProbers[0]
+            #                self._mBestGuessProber = self._mProbers[0]
         return self._mBestGuessProber.get_charset_name()
 
     def feed(self, aBuf):
@@ -101,6 +101,7 @@ class CharSetGroupProber(CharSetProber):
         if not self._mBestGuessProber:
             return 0.0
         return bestConf
+
 #        else:
 #            self._mBestGuessProber = self._mProbers[0]
 #            return self._mBestGuessProber.get_confidence()

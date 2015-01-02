@@ -12,7 +12,7 @@ import os
 # may not use this file except in compliance with the License. A copy
 # of the License is located at
 #
-#   http://aws.amazon.com/apache2.0/
+# http://aws.amazon.com/apache2.0/
 #
 # or in the "license" file accompanying this file. This file is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
@@ -20,29 +20,30 @@ import os
 # specific language governing permissions and limitations under the
 # License.
 
+
 class ElasticBeanstalkConfig:
     def __init__(self, root_directory):
         self.root_directory = root_directory
 
         self.EB_CONFIG_KEYS = {
-        "region": "Region",
-        "application_name": "ApplicationName",
-        "environment_name": "EnvironmentName",
-        "dev_tools_endpoint": "DevToolsEndpoint"
+            "region": "Region",
+            "application_name": "ApplicationName",
+            "environment_name": "EnvironmentName",
+            "dev_tools_endpoint": "DevToolsEndpoint"
         }
 
         self.CREDENTIAL_KEYS = {
-        "access_key_id": "AWSAccessKeyId",
-        "secret_access_key": "AWSSecretKey"
+            "access_key_id": "AWSAccessKeyId",
+            "secret_access_key": "AWSSecretKey"
         }
 
         self.GIT_CONFIG_KEYS = {
-        "region": "aws.region",
-        "application_name": "aws.elasticbeanstalk.application",
-        "environment_name": "aws.elasticbeanstalk.environment",
-        "dev_tools_endpoint": "aws.elasticbeanstalk.host",
-        "access_key_id": "aws.accesskey",
-        "secret_access_key": "aws.secretkey"
+            "region": "aws.region",
+            "application_name": "aws.elasticbeanstalk.application",
+            "environment_name": "aws.elasticbeanstalk.environment",
+            "dev_tools_endpoint": "aws.elasticbeanstalk.host",
+            "access_key_id": "aws.accesskey",
+            "secret_access_key": "aws.secretkey"
         }
 
         self.KNOWN_REGIONS = [
@@ -87,8 +88,8 @@ class ElasticBeanstalkConfig:
 
     def set_credential_file_path(self):
         self.credential_file_path = os.getenv('AWS_CREDENTIAL_FILE') or (
-        self.eb_config_settings and self.eb_config_settings.get(
-            "AwsCredentialFile")) or self.default_credential_file_path()
+            self.eb_config_settings and self.eb_config_settings.get(
+                "AwsCredentialFile")) or self.default_credential_file_path()
 
     def set_credential_file(self):
         if not self.credential_file and self.credential_file_exists():
@@ -99,7 +100,8 @@ class ElasticBeanstalkConfig:
 
     def credential_file_configured(self):
         return (
-        os.getenv('AWS_CREDENTIAL_FILE') or (self.eb_config_file and self.eb_config_settings.get("AwsCredentialFile")))
+            os.getenv('AWS_CREDENTIAL_FILE') or (
+            self.eb_config_file and self.eb_config_settings.get("AwsCredentialFile")))
 
     def credential_file_readable(self):
         if self.credential_file_path:
@@ -194,8 +196,8 @@ class ElasticBeanstalkConfig:
 
             self.credential_file = INI(self.default_credential_file_path(), False)
             self.credential_file.write_settings("global", {
-            self.CREDENTIAL_KEYS["access_key_id"]: settings.get("access_key_id", ""),
-            self.CREDENTIAL_KEYS["secret_access_key"]: settings.get("secret_access_key", "")
+                self.CREDENTIAL_KEYS["access_key_id"]: settings.get("access_key_id", ""),
+                self.CREDENTIAL_KEYS["secret_access_key"]: settings.get("secret_access_key", "")
             })
 
             self.eb_config_file.write_settings("global", {"AwsCredentialFile": self.credential_file_path})

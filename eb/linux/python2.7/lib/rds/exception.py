@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -20,18 +20,16 @@ from lib.aws.exception import AwsServiceException
 class RdsErrorCode(object):
     '''RDS error code'''
     DBInstanceNotFound = u'DBInstanceNotFound'
-    
+
 
 class RdsDBInstanceNotFoundException(AwsServiceException):
-    
     def __init__(self, ex):
         if not issubclass(ex.__class__, AwsServiceException):
             raise AttributeError(u'Must initialize from instance of AwsServiceException subclass.')
         super(RdsDBInstanceNotFoundException, self).__init__(ex.message, ex.code, ex.http_code)
-    
+
 
 class RdsDBSnapshotNotFoundException(AwsServiceException):
-    
     def __init__(self, ex):
         if not issubclass(ex.__class__, AwsServiceException):
             raise AttributeError(u'Must initialize from instance of AwsServiceException subclass.')

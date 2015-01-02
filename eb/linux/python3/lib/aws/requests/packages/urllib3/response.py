@@ -190,7 +190,7 @@ class HTTPResponse(object):
             k = k.lower()
 
             has_value = headers.get(k)
-            if has_value: # Python 3: Repeating header keys are unmerged.
+            if has_value:  # Python 3: Repeating header keys are unmerged.
                 v = ', '.join([has_value, v])
 
             headers[k] = v

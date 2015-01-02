@@ -1,5 +1,4 @@
-
-#This code has been modified. Portions copyright 2011-2012 Amazon.com, Inc. or 
+# This code has been modified. Portions copyright 2011-2012 Amazon.com, Inc. or
 #its affiliates. Please see LICENSE.txt for applicable license terms and 
 #NOTICE.txt for applicable notices.  
 
@@ -9,20 +8,22 @@ import re
 
 __version__ = '3.2.2'
 
+
 class CertificateError(ValueError):
     pass
 
 
 def _reject_wild_cert(dn):
     # Reject a wild cert. Return True if rejects otherwise False
-    if re.compile('^[.*]+$').match(dn):    # reject cert only having "*" and/or "."
-        return True 
-    elif re.compile('^\*\.[^.]+$').match(dn):   #reject top level domain wild card
+    if re.compile('^[.*]+$').match(dn):  # reject cert only having "*" and/or "."
         return True
-    elif re.compile('^\*\.co\.[^.]+$').match(dn):   # reject *.co.* domain cert
+    elif re.compile('^\*\.[^.]+$').match(dn):  #reject top level domain wild card
+        return True
+    elif re.compile('^\*\.co\.[^.]+$').match(dn):  # reject *.co.* domain cert
         return True
     else:
         return False
+
 
 def _dnsname_to_pat(dn):
     pats = []
@@ -36,6 +37,7 @@ def _dnsname_to_pat(dn):
             frag = re.escape(frag)
             pats.append(frag.replace(r'\*', '[^.]*'))
     return re.compile(r'\A' + r'\.'.join(pats) + r'\Z', re.IGNORECASE)
+
 
 def match_hostname(cert, hostname):
     """Verify that *cert* (in decoded format as returned by
@@ -63,17 +65,17 @@ def match_hostname(cert, hostname):
                 # must be used.
                 if key == 'commonName':
                     if not _reject_wild_cert(value) and \
-                        _dnsname_to_pat(value).match(hostname):
+                            _dnsname_to_pat(value).match(hostname):
                         return
                     dnsnames.append(value)
     if len(dnsnames) > 1:
         raise CertificateError("hostname %r "
-            "doesn't match either of %s"
-            % (hostname, ', '.join(map(repr, dnsnames))))
+                               "doesn't match either of %s"
+                               % (hostname, ', '.join(map(repr, dnsnames))))
     elif len(dnsnames) == 1:
         raise CertificateError("hostname %r "
-            "doesn't match %r"
-            % (hostname, dnsnames[0]))
+                               "doesn't match %r"
+                               % (hostname, dnsnames[0]))
     else:
         raise CertificateError("no appropriate commonName or "
-            "subjectAltName fields were found")
+                               "subjectAltName fields were found")

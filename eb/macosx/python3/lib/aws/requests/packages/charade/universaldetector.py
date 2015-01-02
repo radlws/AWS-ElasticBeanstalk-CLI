@@ -7,7 +7,7 @@
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
-#   Mark Pilgrim - port to Python
+# Mark Pilgrim - port to Python
 #   Shy Shalom - original C code
 #
 # This library is free software; you can redistribute it and/or
@@ -107,7 +107,7 @@ class UniversalDetector:
             if self._highBitDetector.search(aBuf):
                 self._mInputState = eHighbyte
             elif ((self._mInputState == ePureAscii) and
-                    self._escDetector.search(self._mLastChar + aBuf)):
+                      self._escDetector.search(self._mLastChar + aBuf)):
                 self._mInputState = eEscAscii
 
         self._mLastChar = aBuf[-1:]

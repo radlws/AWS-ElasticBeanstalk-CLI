@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -18,19 +18,17 @@ import datetime
 
 
 class BaseModel(object):
-    
     def __str__(self):
         return self.__repr__()
-   
+
     def __repr__(self):
         ret = u"\n"
         for attr, value in self.__dict__.iteritems():
             ret += "(" + unicode(attr) + ":" + unicode(value) + ")\n"
-        return ret    
+        return ret
 
 
 class Endpoint(BaseModel):
-
     def __init__(self):
         self._address = None
         self._port = None
@@ -38,7 +36,7 @@ class Endpoint(BaseModel):
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of Endpoint from structured json data"""
-        dbpgs = cls()        
+        dbpgs = cls()
         if json_data is not None:
             dbpgs._address = json_data[u'Address']
             dbpgs._port = json_data[u'Port']
@@ -55,7 +53,6 @@ class Endpoint(BaseModel):
 
 
 class DBParameterGroupStatus(BaseModel):
-
     def __init__(self):
         self._db_parameter_group_name = None
         self._parameter_apply_status = None
@@ -63,11 +60,11 @@ class DBParameterGroupStatus(BaseModel):
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of DBParameterGroupStatus from structured json data"""
-        dbpgs = cls()        
-        
+        dbpgs = cls()
+
         dbpgs._db_parameter_group_name = json_data[u'DBParameterGroupName']
         dbpgs._parameter_apply_status = json_data[u'ParameterApplyStatus']
-        
+
         return dbpgs
 
     @property
@@ -80,7 +77,6 @@ class DBParameterGroupStatus(BaseModel):
 
 
 class DBSecurityGroupMembership(BaseModel):
-
     def __init__(self):
         self._db_security_group_name = None
         self._status = None
@@ -88,11 +84,11 @@ class DBSecurityGroupMembership(BaseModel):
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of DBSecurityGroupMembership from structured json data"""
-        dbpgs = cls()        
-        
+        dbpgs = cls()
+
         dbpgs._db_security_group_name = json_data[u'DBSecurityGroupName']
         dbpgs._status = json_data[u'Status']
-        
+
         return dbpgs
 
     @property
@@ -106,7 +102,7 @@ class DBSecurityGroupMembership(BaseModel):
 
 class DBInstance(BaseModel):
     #TODO: not including all attributes yet
-    
+
     def __init__(self):
         self._allocated_storage = None
         self._auto_minor_version_upgrade = None
@@ -114,53 +110,53 @@ class DBInstance(BaseModel):
         self._backup_retention_period = None
         self._character_set_name = None
         self._db_instance_class = None
-        self._db_instance_identifier = None     
+        self._db_instance_identifier = None
         self._dbi_nstance_status = None
         self._db_name = None
         self._db_parameter_groups = None
         self._db_security_groups = None
         self._endpoint = None
-        self._engine = None     
-        self._engine_version = None     
-        self._instance_create_time = None     
+        self._engine = None
+        self._engine_version = None
+        self._instance_create_time = None
         self._latest_restorable_time = None
-        self._license_model = None     
-        self._master_username = None     
+        self._license_model = None
+        self._master_username = None
         self._multi_az = None
 
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of DBSnapshot from structured json data"""
-        dbi = cls()        
-        
+        dbi = cls()
+
         dbi._allocated_storage = json_data[u'AllocatedStorage']
         dbi._auto_minor_version_upgrade = json_data[u'AutoMinorVersionUpgrade']
         dbi._availability_zone = json_data[u'AvailabilityZone']
         dbi._backup_retention_period = json_data[u'BackupRetentionPeriod']
         dbi._character_set_name = json_data[u'CharacterSetName']
         dbi._db_instance_class = json_data[u'DBInstanceClass']
-        dbi._db_instance_identifier = json_data[u'DBInstanceIdentifier']     
-        dbi._db_instance_status = json_data[u'DBInstanceStatus']     
-        dbi._db_name = json_data[u'DBName']     
-        dbi._db_parameter_groups = list() 
+        dbi._db_instance_identifier = json_data[u'DBInstanceIdentifier']
+        dbi._db_instance_status = json_data[u'DBInstanceStatus']
+        dbi._db_name = json_data[u'DBName']
+        dbi._db_parameter_groups = list()
         for param_group in json_data[u'DBParameterGroups']:
-            dbi._db_parameter_groups.append(DBParameterGroupStatus.from_json(param_group))        
-        dbi._db_security_groups = list() 
+            dbi._db_parameter_groups.append(DBParameterGroupStatus.from_json(param_group))
+        dbi._db_security_groups = list()
         for sec_group in json_data[u'DBSecurityGroups']:
-            dbi._db_security_groups.append(DBSecurityGroupMembership.from_json(sec_group))        
-        dbi._endpoint = Endpoint.from_json(json_data[u'Endpoint'])     
-        dbi._engine = json_data[u'Engine']     
-        dbi._engine_version = json_data[u'EngineVersion']     
-        dbi._instance_create_time_raw = json_data[u'InstanceCreateTime']     
-        dbi._instance_create_time = datetime.datetime.fromtimestamp\
-            (dbi._instance_create_time_raw).replace(microsecond=0)     
-        dbi._latest_restorable_time_raw = json_data[u'LatestRestorableTime']     
+            dbi._db_security_groups.append(DBSecurityGroupMembership.from_json(sec_group))
+        dbi._endpoint = Endpoint.from_json(json_data[u'Endpoint'])
+        dbi._engine = json_data[u'Engine']
+        dbi._engine_version = json_data[u'EngineVersion']
+        dbi._instance_create_time_raw = json_data[u'InstanceCreateTime']
+        dbi._instance_create_time = datetime.datetime.fromtimestamp \
+            (dbi._instance_create_time_raw).replace(microsecond=0)
+        dbi._latest_restorable_time_raw = json_data[u'LatestRestorableTime']
         dbi._latest_restorable_time = datetime.datetime.fromtimestamp \
-            (dbi._latest_restorable_time_raw).replace(microsecond=0)\
-            if dbi._latest_restorable_time_raw is not None else None     
-        dbi._license_model = json_data[u'LicenseModel']     
-        dbi._master_username = json_data[u'MasterUsername'] 
-        dbi._multi_az = json_data[u'MultiAZ'] 
+            (dbi._latest_restorable_time_raw).replace(microsecond=0) \
+            if dbi._latest_restorable_time_raw is not None else None
+        dbi._license_model = json_data[u'LicenseModel']
+        dbi._master_username = json_data[u'MasterUsername']
+        dbi._multi_az = json_data[u'MultiAZ']
 
         return dbi
 
@@ -243,50 +239,49 @@ class DBInstance(BaseModel):
 
 
 class DBSnapshot(BaseModel):
-    
     TypeAutomated = u'automated'
     TypeManual = u'manual'
-    
+
     def __init__(self):
         self._allocated_storage = None
         self._availability_zone = None
-        self._db_instance_identifier = None     
-        self._db_snapshot_identifier = None     
-        self._engine = None     
-        self._engine_version = None     
-        self._instance_create_time = None     
-        self._license_model = None     
-        self._master_username = None     
-        self._port = None     
-        self._snapshot_create_time = None     
-        self._snapshot_type = None     
-        self._status = None     
-        self._vpc_id = None     
+        self._db_instance_identifier = None
+        self._db_snapshot_identifier = None
+        self._engine = None
+        self._engine_version = None
+        self._instance_create_time = None
+        self._license_model = None
+        self._master_username = None
+        self._port = None
+        self._snapshot_create_time = None
+        self._snapshot_type = None
+        self._status = None
+        self._vpc_id = None
 
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of DBSnapshot from structured json data"""
-        dbs = cls()        
-        
+        dbs = cls()
+
         dbs._allocated_storage = json_data[u'AllocatedStorage']
         dbs._availability_zone = json_data[u'AvailabilityZone']
-        dbs._db_instance_identifier = json_data[u'DBInstanceIdentifier']     
-        dbs._db_snapshot_identifier = json_data[u'DBSnapshotIdentifier']     
-        dbs._engine = json_data[u'Engine']     
-        dbs._engine_version = json_data[u'EngineVersion']     
-        dbs._instance_create_time_raw = json_data[u'InstanceCreateTime']     
-        dbs._instance_create_time = datetime.datetime.fromtimestamp\
-            (dbs._instance_create_time_raw).replace(microsecond=0)     
-        dbs._license_model = json_data[u'LicenseModel']     
-        dbs._master_username = json_data[u'MasterUsername']     
-        dbs._port = json_data[u'Port']     
-        dbs._snapshot_create_time_raw = json_data[u'SnapshotCreateTime']     
-        dbs._snapshot_create_time = datetime.datetime.fromtimestamp\
+        dbs._db_instance_identifier = json_data[u'DBInstanceIdentifier']
+        dbs._db_snapshot_identifier = json_data[u'DBSnapshotIdentifier']
+        dbs._engine = json_data[u'Engine']
+        dbs._engine_version = json_data[u'EngineVersion']
+        dbs._instance_create_time_raw = json_data[u'InstanceCreateTime']
+        dbs._instance_create_time = datetime.datetime.fromtimestamp \
+            (dbs._instance_create_time_raw).replace(microsecond=0)
+        dbs._license_model = json_data[u'LicenseModel']
+        dbs._master_username = json_data[u'MasterUsername']
+        dbs._port = json_data[u'Port']
+        dbs._snapshot_create_time_raw = json_data[u'SnapshotCreateTime']
+        dbs._snapshot_create_time = datetime.datetime.fromtimestamp \
             (dbs._snapshot_create_time_raw).replace(microsecond=0)
-        dbs._snapshot_type = json_data[u'SnapshotType']     
-        dbs._status = json_data[u'Status']     
-        dbs._vpc_id = json_data[u'VpcId']             
-        
+        dbs._snapshot_type = json_data[u'SnapshotType']
+        dbs._status = json_data[u'Status']
+        dbs._vpc_id = json_data[u'VpcId']
+
         return dbs
 
     @property
@@ -346,9 +341,7 @@ class DBSnapshot(BaseModel):
         return self._vpc_id
 
 
-
 class DBEngineVersion(BaseModel):
-    
     def __init__(self):
         self._db_engineDescription = None
         self._db_engineVersionDescription = None
@@ -360,8 +353,8 @@ class DBEngineVersion(BaseModel):
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of DBEngineVersion from structured json data"""
-        dbe = cls()        
-        
+        dbe = cls()
+
         dbe._db_engineDescription = json_data[u'DBEngineDescription']
         dbe._db_engineVersionDescription = json_data[u'DBEngineVersionDescription']
         dbe._db_parameterGroupFamily = json_data[u'DBParameterGroupFamily']

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -28,54 +28,53 @@ from scli.parameter import Parameter
 
 log = logging.getLogger('cli')
 
+
 class ServiceTerminal(TerminalBase):
-
-
     @classmethod
     def ask_aws_access_key_id(cls, parameter_pool):
         print((TerminalMessage.AWSKeyLocateHelp))
         msg_value = parameter_pool.get_value(ParameterName.AwsAccessKeyId)
-        cls.ask_parameter(parameter_pool, 
-                           ParameterName.AwsAccessKeyId,
-                           misc.mask_string(msg_value))
-    
+        cls.ask_parameter(parameter_pool,
+                          ParameterName.AwsAccessKeyId,
+                          misc.mask_string(msg_value))
+
 
     @classmethod
     def ask_aws_secret_access_key(cls, parameter_pool):
         msg_value = parameter_pool.get_value(ParameterName.AwsSecretAccessKey)
-        cls.ask_parameter(parameter_pool, 
-                           ParameterName.AwsSecretAccessKey,
-                           misc.mask_string(msg_value))
-        
+        cls.ask_parameter(parameter_pool,
+                          ParameterName.AwsSecretAccessKey,
+                          misc.mask_string(msg_value))
+
 
     @classmethod
     def ask_region(cls, parameter_pool):
         original_value = parameter_pool.get_value(ParameterName.Region)
-        
+
         original_source = parameter_pool.get_source(ParameterName.Region) \
             if parameter_pool.has(ParameterName.Region) else None
-        
+
         if original_value is not None and \
-            ParameterSource.is_ahead(original_source, ParameterSource.Terminal):
-            print((TerminalPromptSettingParameterMessage[ParameterName.Region].\
-                      format(ServiceRegionName[original_value])))            
+                ParameterSource.is_ahead(original_source, ParameterSource.Terminal):
+            print((TerminalPromptSettingParameterMessage[ParameterName.Region]. \
+                   format(ServiceRegionName[original_value])))
             region_value = original_value
         else:
             append_message = '' if original_value is None \
-                else TerminalMessage.CurrentValue.format(ServiceRegionName[original_value])        
+                else TerminalMessage.CurrentValue.format(ServiceRegionName[original_value])
             print(TerminalPromptAskingMessage[ParameterName.Region].format(append_message))
-            
+
             region_name_list = list()
             for region in AvailableServiceRegion:
                 region_name_list.append(ServiceRegionName[region])
-            region_index = cls.single_choice(choice_list = region_name_list, 
-                                             title = TerminalMessage.AvailableRegion, 
-                                             can_return_none = original_value is not None)
-            
+            region_index = cls.single_choice(choice_list=region_name_list,
+                                             title=TerminalMessage.AvailableRegion,
+                                             can_return_none=original_value is not None)
+
             region_value = AvailableServiceRegion[region_index] \
                 if region_index is not None else original_value
-            region = Parameter(ParameterName.Region, 
-                               misc.to_unicode(region_value), 
+            region = Parameter(ParameterName.Region,
+                               misc.to_unicode(region_value),
                                ParameterSource.Terminal)
             parameter_pool.put(region, True)
 
@@ -89,20 +88,20 @@ class ServiceTerminal(TerminalBase):
 
     @classmethod
     def ask_service_endpoint(cls, parameter_pool):
-        endpoint_source = parameter_pool.get_source(ParameterName.ServiceEndpoint)\
+        endpoint_source = parameter_pool.get_source(ParameterName.ServiceEndpoint) \
             if parameter_pool.has(ParameterName.ServiceEndpoint) else None
-        region_source = parameter_pool.get_source(ParameterName.Region)\
+        region_source = parameter_pool.get_source(ParameterName.Region) \
             if parameter_pool.has(ParameterName.Region) else None
-        
+
         if region_source is None:
             cls.ask_region(parameter_pool)
-        
+
         if endpoint_source is not None \
-            and not ParameterSource.is_ahead(region_source, endpoint_source):
+                and not ParameterSource.is_ahead(region_source, endpoint_source):
             return
 
-        endpoint = Parameter(ParameterName.ServiceEndpoint, 
-                             ServiceEndpoint[parameter_pool.get_value(ParameterName.Region, False)], 
+        endpoint = Parameter(ParameterName.ServiceEndpoint,
+                             ServiceEndpoint[parameter_pool.get_value(ParameterName.Region, False)],
                              region_source)
         parameter_pool.put(endpoint, False)
             

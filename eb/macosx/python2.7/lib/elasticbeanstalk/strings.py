@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -20,8 +20,6 @@ APP_EXIST_RE = u'Application .+ already exist'
 VER_EXIST_RE = u'Version .+ already exist'
 ENV_EXIST_RE = u'Environment (\w|-)+ already exist'
 
-
 APP_IN_ACTION_RE = u'Cannot create .+ is currently .+'
-
 
 APP_HAS_RUNNING_ENV = u'Unable to delete application .+ because it is deployed to running environments.'

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -18,15 +18,15 @@ import datetime
 
 
 class BaseModel(object):
-    
     def __str__(self):
         return self.__repr__()
-   
+
     def __repr__(self):
         ret = u"\n"
         for attr, value in self.__dict__.iteritems():
             ret += "(" + unicode(attr) + ":" + unicode(value) + ")\n"
-        return ret    
+        return ret
+
 
 def extract_list_elements(json_data, property_name, factory_method):
     elements = []
@@ -37,12 +37,14 @@ def extract_list_elements(json_data, property_name, factory_method):
                 elements.append(factory_method(element))
     return elements
 
+
 def extract_element(json_data, property_name, factory_method):
     if property_name in json_data:
         element = json_data[property_name]
         if element:
             return factory_method(element)
     return None
+
 
 class ApplicationDescription(BaseModel):
     """ <p>Describes the properties of an application.</p>\n"""
@@ -55,8 +57,8 @@ class ApplicationDescription(BaseModel):
         self._date_updated = None
         self._date_updated_raw = None
         self._description = None
-        self._versions = None 
-    
+        self._versions = None
+
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of ApplicationDescription from structured json data"""
@@ -64,20 +66,20 @@ class ApplicationDescription(BaseModel):
         ad._application_name = json_data[u'ApplicationName']
         ad._configuration_templates = json_data[u'ConfigurationTemplates']
         ad._date_created_raw = json_data[u'DateCreated']
-        ad._date_created = datetime.datetime.fromtimestamp(ad._date_created_raw).\
+        ad._date_created = datetime.datetime.fromtimestamp(ad._date_created_raw). \
             replace(microsecond=0)
         ad._date_updated_raw = json_data[u'DateUpdated']
-        ad._date_updated = datetime.datetime.fromtimestamp(ad._date_updated_raw).\
+        ad._date_updated = datetime.datetime.fromtimestamp(ad._date_updated_raw). \
             replace(microsecond=0)
         ad._description = json_data[u'Description']
-        ad._versions = json_data[u'Versions'] 
+        ad._versions = json_data[u'Versions']
         return ad
-            
+
     @property
     def application_name(self):
         """ <p>The name of the application.</p>\n"""
         return self._application_name
-            
+
     @property
     def configuration_templates(self):
         """ <p> The names of the configuration templates associated with this 
@@ -93,7 +95,7 @@ class ApplicationDescription(BaseModel):
     def date_updated(self):
         """ <p>The date when the application was last modified.</p>\n"""
         return self._date_updated
-    
+
     @property
     def description(self):
         """ <p>User-defined description of the application.</p>\n"""
@@ -115,10 +117,11 @@ class ApplicationDescription(BaseModel):
 
 class S3Location(BaseModel):
     """ <p>A specification of a location in Amazon S3.</p>\n"""
+
     def __init__(self):
         self._s3_bucket = None
         self._s3_key = None
-    
+
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of S3Location from structured json data"""
@@ -126,7 +129,7 @@ class S3Location(BaseModel):
         s3l._s3_bucket = json_data[u'S3Bucket']
         s3l._s3_key = json_data[u'S3Key']
         return s3l
-            
+
     @property
     def s3_bucket(self):
         """ <p>The Amazon S3 bucket where the data is located.</p>\n"""
@@ -140,6 +143,7 @@ class S3Location(BaseModel):
 
 class ApplicationVersionDescription(BaseModel):
     """ <p> Describes the properties of an application version. </p>\n"""
+
     def __init__(self):
         self._application_name = None
         self._date_created = None
@@ -148,24 +152,24 @@ class ApplicationVersionDescription(BaseModel):
         self._date_updated_raw = None
         self._description = None
         self._source_bundle = None
-        self._version_label = None 
-    
+        self._version_label = None
+
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of ApplicationVersionDescription from structured json data"""
         avd = cls()
         avd._application_name = json_data[u'ApplicationName']
         avd._date_created_raw = json_data[u'DateCreated']
-        avd._date_created = datetime.datetime.fromtimestamp(avd._date_created_raw).\
+        avd._date_created = datetime.datetime.fromtimestamp(avd._date_created_raw). \
             replace(microsecond=0)
         avd._date_updated_raw = json_data[u'DateUpdated']
-        avd._date_updated = datetime.datetime.fromtimestamp(avd._date_updated_raw).\
+        avd._date_updated = datetime.datetime.fromtimestamp(avd._date_updated_raw). \
             replace(microsecond=0)
         avd._description = json_data[u'Description']
         avd._source_bundle = S3Location.from_json(json_data[u'SourceBundle'])
         avd._version_label = json_data[u'VersionLabel']
-        return avd 
-            
+        return avd
+
     @property
     def application_name(self):
         """ <p>The name of the application associated with this release.</p>\n"""
@@ -180,7 +184,7 @@ class ApplicationVersionDescription(BaseModel):
     def date_updated(self):
         """ <p>The last modified date of the application version.</p>\n"""
         return self._date_updated
-    
+
     @property
     def description(self):
         """ <p>The description of this application version.</p>\n"""
@@ -203,7 +207,7 @@ class ApplicationVersionDescription(BaseModel):
     @property
     def date_updated_raw(self):
         return self._date_updated_raw
-    
+
 
 class EnvironmentDescription(BaseModel):
     """ <p>Describes the properties of an environment.</p>\n"""
@@ -224,7 +228,7 @@ class EnvironmentDescription(BaseModel):
         self._status = None
         self._solution_stack_name = None
         self._template_name = None
-        self._version_label = None 
+        self._version_label = None
 
     @classmethod
     def from_json(cls, json_data):
@@ -233,10 +237,10 @@ class EnvironmentDescription(BaseModel):
         en._application_name = json_data[u'ApplicationName']
         en._cname = json_data[u'CNAME']
         en._date_created_raw = json_data[u'DateCreated']
-        en._date_created = datetime.datetime.fromtimestamp(en._date_created_raw).\
+        en._date_created = datetime.datetime.fromtimestamp(en._date_created_raw). \
             replace(microsecond=0)
         en._date_updated_raw = json_data[u'DateUpdated']
-        en._date_updated = datetime.datetime.fromtimestamp(en._date_updated_raw).\
+        en._date_updated = datetime.datetime.fromtimestamp(en._date_updated_raw). \
             replace(microsecond=0)
         en._description = json_data[u'Description']
         en._endpoint_url = json_data[u'EndpointURL']
@@ -249,7 +253,7 @@ class EnvironmentDescription(BaseModel):
         en._template_name = json_data[u'TemplateName']
         en._version_label = json_data[u'VersionLabel']
         en._tier = extract_element(json_data, u'Tier', EnvironmentTier.from_json)
-        
+
         return en
 
     @property
@@ -276,7 +280,7 @@ class EnvironmentDescription(BaseModel):
     def tier(self):
         """ <p>The environment tier for this environment.</p>\n"""
         return self._tier
-    
+
     @property
     def solution_stack_name(self):
         """ <p>The name of the <code>SolutionStack</code> deployed with this environment.</p>\n"""
@@ -363,12 +367,12 @@ class EnvironmentDescription(BaseModel):
                    healthy and fully functional.
                 </p>
              </value>
-          </enumValues>"""        
+          </enumValues>"""
         return self._health
 
     @property
     def resources(self):
-        """ <p>The description of the AWS resources used by this environment.</p>\n"""        
+        """ <p>The description of the AWS resources used by this environment.</p>\n"""
         return self._resources
 
     @property
@@ -381,12 +385,11 @@ class EnvironmentDescription(BaseModel):
 
 
 class EnvironmentTier(BaseModel):
-    
     def __init__(self):
         self._name = None
         self._type = None
         self._version = None
-    
+
     @classmethod
     def from_values(cls, tier_name, tier_type, tier_version):
         et = cls()
@@ -394,17 +397,17 @@ class EnvironmentTier(BaseModel):
         et._type = tier_type
         et._version = tier_version
         return et
-    
+
     SEPARATOR = u"::"
+
     @classmethod
     def from_serialized_string(cls, serialized_string):
-        
         elements = serialized_string.split(EnvironmentTier.SEPARATOR)
-        if elements and (len(elements)==3):
-            return  cls.from_values(elements[0], elements[1], elements[2])
-        
+        if elements and (len(elements) == 3):
+            return cls.from_values(elements[0], elements[1], elements[2])
+
         return None
-    
+
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of EnvironmentTier from structured json data"""
@@ -413,19 +416,19 @@ class EnvironmentTier(BaseModel):
         et._type = json_data[u'Type']
         et._version = json_data[u'Version']
         return et
-    
+
     @property
     def name(self):
         return self._name
-    
+
     @property
     def type(self):
         return self._type
-    
+
     @property
     def version(self):
         return self._version
-    
+
     def to_serialized_string(self):
         return EnvironmentTier.SEPARATOR.join((self.name, self.type, self.version))
 
@@ -438,7 +441,7 @@ class EnvironmentResourceDescription(BaseModel):
         self._environment_name = None
         self._instances = None
         self._launch_configurations = None
-        self._load_balancers = None 
+        self._load_balancers = None
         self._triggers = None
         self._resources = None
         self._queues = None
@@ -451,12 +454,12 @@ class EnvironmentResourceDescription(BaseModel):
         erd._environment_name = json_data[u'EnvironmentName']
         erd._instances = json_data[u'Instances']
         erd._launch_configurations = json_data[u'LaunchConfigurations']
-        erd._load_balancers = json_data[u'LoadBalancers'] 
+        erd._load_balancers = json_data[u'LoadBalancers']
         erd._triggers = json_data[u'Triggers']
         erd._resources = extract_list_elements(json_data, u'Resources', ResourceDescription.from_json)
         erd._queues = extract_list_elements(json_data, u'Queues', Queue.from_json)
         return erd
-    
+
     @property
     def auto_scaling_groups(self):
         """<p> The <code>AutoScalingGroups</code> used by this environment. </p>\n"""
@@ -466,22 +469,22 @@ class EnvironmentResourceDescription(BaseModel):
     def environment_name(self):
         """<p> Environment name. </p>\n"""
         return self._environment_name
-     
+
     @property
     def instances(self):
         """<p>The Amazon EC2 instances used by this environment.</p>\n"""
         return self._instances
-     
+
     @property
     def launch_configurations(self):
         """<p>The Auto Scaling launch configurations in use by this environment.</p>\n"""
         return self._launch_configurations
-    
+
     @property
     def load_balancers(self):
         """ <p>The LoadBalancers in use by this environment.</p>\n"""
         return self._load_balancers
-    
+
     @property
     def triggers(self):
         """The <code>AutoScaling</code> triggers in use by this environment. </p>\n"""
@@ -490,13 +493,13 @@ class EnvironmentResourceDescription(BaseModel):
     @property
     def resources(self):
         return self._resources
-    
+
     @property
     def queues(self):
         return self._queues
-    
-class ResourceProperty(BaseModel):
 
+
+class ResourceProperty(BaseModel):
     def __init__(self):
         self._name = None
         self._value = None
@@ -508,7 +511,7 @@ class ResourceProperty(BaseModel):
         rp._name = json_data[u'Name']
         rp._value = json_data[u'Value']
         return rp
-    
+
     @property
     def name(self):
         return self._name
@@ -519,13 +522,12 @@ class ResourceProperty(BaseModel):
 
 
 class ResourceDescription(BaseModel):
-
     def __init__(self):
         self._description = None
         self._logical_resource_id = None
         self._physical_resource_id = None
         self._properties = None
-        self._type = None 
+        self._type = None
 
     @classmethod
     def from_json(cls, json_data):
@@ -545,26 +547,25 @@ class ResourceDescription(BaseModel):
     @property
     def logical_resource_id(self):
         return self._logical_resource_id
-     
+
     @property
     def physical_resource_id(self):
         return self._physical_resource_id
-     
+
     @property
     def properties(self):
         return self._properties
-    
+
     @property
     def type(self):
         return self._type
 
 
 class Queue(BaseModel):
-    
     def __init__(self):
         self._name = None
         self._url = None
-    
+
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of Queue from structured json data"""
@@ -572,11 +573,11 @@ class Queue(BaseModel):
         q._name = json_data[u'Name']
         q._url = json_data[u'URL']
         return q
-    
+
     @property
     def name(self):
         return self._name
-    
+
     @property
     def url(self):
         return self._url
@@ -594,7 +595,7 @@ class EventDescription(BaseModel):
         self._request_id = None
         self._severity = None
         self._template_name = None
-        self._version_label = None 
+        self._version_label = None
 
     @classmethod
     def from_json(cls, json_data):
@@ -603,13 +604,13 @@ class EventDescription(BaseModel):
         ev._application_name = json_data[u'ApplicationName']
         ev._environment_name = json_data[u'EnvironmentName']
         ev._event_date_raw = json_data[u'EventDate']
-        ev._event_date = datetime.datetime.fromtimestamp(ev._event_date_raw).\
+        ev._event_date = datetime.datetime.fromtimestamp(ev._event_date_raw). \
             replace(microsecond=0)
         ev._message = json_data[u'Message']
         ev._request_id = json_data[u'RequestId']
         ev._severity = json_data[u'Severity']
         ev._template_name = json_data[u'TemplateName']
-        ev._version_label = json_data[u'VersionLabel'] 
+        ev._version_label = json_data[u'VersionLabel']
         return ev
 
 
@@ -650,7 +651,7 @@ class EventDescription(BaseModel):
     def template_name(self):
         """ <p>The name of the configuration associated with this event.</p>\n"""
         return self._template_name
-    
+
     @property
     def version_label(self):
         """ <p>The release label for the application version associated with this event.</p>\n"""
@@ -659,7 +660,7 @@ class EventDescription(BaseModel):
     @property
     def event_date_raw(self):
         return self._event_date_raw
-    
+
 
 class SolutionStackDescription(BaseModel):
     """ <p>Describes the solution stack.</p>\n"""
@@ -667,7 +668,7 @@ class SolutionStackDescription(BaseModel):
     def __init__(self):
         self._solutionstack_name = None
         self._permitted_file_types = None
-    
+
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of SolutionStackDescription from structured json data"""
@@ -675,16 +676,16 @@ class SolutionStackDescription(BaseModel):
         ssd._solutionstack_name = json_data[u'SolutionStackName']
         ssd._permitted_file_types = json_data[u'PermittedFileTypes']
         return ssd
-            
+
     @property
     def solutionstack_name(self):
         """ <p>The name of the solution stack.</p>\n"""
         return self._solutionstack_name
-    
+
     @property
     def permitted_file_types(self):
         """ <p> The permitted file types allowed for a solution stack. </p>\n"""
-        return self._permitted_file_types 
+        return self._permitted_file_types
 
 
 class ConfigurationOptionDescription(BaseModel):
@@ -702,7 +703,7 @@ class ConfigurationOptionDescription(BaseModel):
         self._max_value = None
         self._max_length = None
         self._regex = None
-    
+
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of ConfigurationOptionDescription from structured json data"""
@@ -719,16 +720,16 @@ class ConfigurationOptionDescription(BaseModel):
         co._max_length = json_data[u'MaxLength']
         co._regex = json_data[u'Regex']
         return co
-            
+
     @property
     def namespace(self):
         """ <p> A unique namespace identifying the option's associated AWS resource. </p>\n"""
         return self._namespace
-    
+
     @property
     def name(self):
         """ <p> The name of the configuration option. </p>\n"""
-        return self._name 
+        return self._name
 
     @property
     def default_value(self):
@@ -862,10 +863,11 @@ class ConfigurationOptionDescription(BaseModel):
 
 class OptionSepcification(BaseModel):
     """ <p> A specification identifying an individual configuration option. </p>\n"""
-    def __init__(self, namespace = None, option_name = None):
+
+    def __init__(self, namespace=None, option_name=None):
         self._namespace = namespace
         self._option_name = option_name
-    
+
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of OptionSepcification from structured json data"""
@@ -873,16 +875,16 @@ class OptionSepcification(BaseModel):
         os._namespace = json_data[u'Namespace']
         os._option_name = json_data[u'OptionName']
         return os
-            
+
     @property
     def namespace(self):
         """ <p> A unique namespace identifying the option's associated AWS resource. </p>\n"""
         return self._namespace
-    
+
     @property
     def option_name(self):
         """ <p> The name of the configuration option. </p>\n"""
-        return self._option_name 
+        return self._option_name
 
 
 class ConfigurationOptionSetting(BaseModel):
@@ -890,11 +892,11 @@ class ConfigurationOptionSetting(BaseModel):
          current value. </p>\n
     """
 
-    def __init__(self, namespace = None, option_name = None, value = None):
+    def __init__(self, namespace=None, option_name=None, value=None):
         self._namespace = namespace
         self._option_name = option_name
         self._value = value
-    
+
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of ConfigurationOptionSetting from structured json data"""
@@ -903,26 +905,26 @@ class ConfigurationOptionSetting(BaseModel):
         cos._option_name = json_data[u'OptionName']
         cos._value = json_data[u'Value']
         return cos
-            
+
     @property
     def namespace(self):
         """ <p> A unique namespace identifying the option's associated AWS resource. </p>\n"""
         return self._namespace
-    
+
     @property
     def option_name(self):
         """ <p> The name of the configuration option. </p>\n"""
-        return self._option_name 
+        return self._option_name
 
     @property
     def value(self):
         """ <p> The current value for the configuration option. </p>\n"""
-        return self._value 
+        return self._value
 
     @namespace.setter
     def namespace(self, namespace):
         self._namespace = namespace
-    
+
     @option_name.setter
     def option_name(self, option_name):
         self._option_name = option_name
@@ -948,17 +950,17 @@ class ConfigurationSettingsDescription(BaseModel):
         self._solution_stack_name = None
         self._template_name = None
 
-    
+
     @classmethod
     def from_json(cls, json_data):
         """ Create instance of ConfigurationSettingsDescription from structured json data"""
         csd = cls()
         csd._application_name = json_data[u'ApplicationName']
         csd._date_created_raw = json_data[u'DateCreated']
-        csd._date_created = datetime.datetime.fromtimestamp(csd._date_created_raw).\
+        csd._date_created = datetime.datetime.fromtimestamp(csd._date_created_raw). \
             replace(microsecond=0)
         csd._date_updated_raw = json_data[u'DateUpdated']
-        csd._date_updated = datetime.datetime.fromtimestamp(csd._date_updated_raw).\
+        csd._date_updated = datetime.datetime.fromtimestamp(csd._date_updated_raw). \
             replace(microsecond=0)
         csd._deployment_status = json_data[u'DeploymentStatus']
         csd._description = json_data[u'Description']
@@ -1045,7 +1047,7 @@ class ConfigurationSettingsDescription(BaseModel):
     def solution_stack_name(self):
         """ <p> The name of the solution stack this configuration set uses. </p>\n"""
         return self._solution_stack_name
-            
+
 
 class ValidationMessage(BaseModel):
     """ <p> An error or warning for a desired configuration option value. </p>\n"""
@@ -1065,12 +1067,12 @@ class ValidationMessage(BaseModel):
         vm._namespace = json_data[u'Namespace']
         vm._option_name = json_data[u'OptionName']
         vm._severity = json_data[u'Severity']
-        
+
         return vm
-    
+
     @property
     def message(self):
-        """ <p> A message describing the error or warning. </p>\n"""        
+        """ <p> A message describing the error or warning. </p>\n"""
         return self._message
 
     @property

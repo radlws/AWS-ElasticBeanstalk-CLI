@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -34,17 +34,17 @@ def ori_path():
     if sys.version_info > (3, 0):
         return os.path.dirname(os.path.realpath(sys.argv[0]))
     else:
-        return os.path.dirname((os.path.realpath(sys.argv[0])).\
-                                decode(locale.getpreferredencoding()))
+        return os.path.dirname((os.path.realpath(sys.argv[0])). \
+                               decode(locale.getpreferredencoding()))
 
 
 def create_directory(directory):
-    ''' Create a directory at location. Return if exist. '''                    
+    ''' Create a directory at location. Return if exist. '''
     if not os.path.exists(directory):
         os.makedirs(directory)
-    
-    
-def call(command, quiet = True):
+
+
+def call(command, quiet=True):
     '''
     Call external process. command is a list of command line arguments including name
     of external process and arguments.
@@ -55,19 +55,19 @@ def call(command, quiet = True):
         command_line = command
     else:
         raise EBSCliException('Parameter must be instance of list or string.')
-    
-    log.debug('Running external commands "{0}".'.\
+
+    log.debug('Running external commands "{0}".'. \
               format(misc.collection_to_string(command_line)))
     # Using OS native code page 
     command_line = [x.encode(locale.getpreferredencoding()) for x in command_line]
-    args = {'args':command_line}
+    args = {'args': command_line}
     if misc.is_os_windows():
         # TODO: set shell to True will allow Windows translate "git" to "git.cmd", 
         # but might introduce other issues.
         args['shell'] = True
     if quiet:
-        args['stderr'] = subprocess.STDOUT        
-        
+        args['stderr'] = subprocess.STDOUT
+
     return misc.to_unicode(subprocess.check_output(**args), False, locale.getpreferredencoding())
 
 
@@ -78,18 +78,18 @@ def climb_dir_tree(path, level):
     return target_path
 
 
-def get_working_branch(quiet = False):
+def get_working_branch(quiet=False):
     try:
-        result = misc.to_unicode(call(GitDefault.GetBranch), locale.getpreferredencoding()) 
+        result = misc.to_unicode(call(GitDefault.GetBranch), locale.getpreferredencoding())
         branches = result.splitlines()
         if len(branches) == 0:
             return None, 0
         else:
-            head_re = re.compile(GitDefault.HeadRe, re.UNICODE)        
+            head_re = re.compile(GitDefault.HeadRe, re.UNICODE)
             for branch in branches:
                 if head_re.match(branch):
                     return branch.split(' ')[1], len(branches)
-                
+
     except subprocess.CalledProcessError as ex:
         # Git returned with an error code
         log.error('Git local repository is not set up:  "{0}".'.format(ex))
@@ -97,7 +97,7 @@ def get_working_branch(quiet = False):
             return None, 0
         else:
             raise EBSCliException(DevToolsMessage.GitRepoNotExist.format(ex.message))
-    
+
     except (OSError, IOError) as ex:
         log.error('Failed to call git, because "{0}".'.format(ex))
         if quiet:
@@ -107,21 +107,21 @@ def get_working_branch(quiet = False):
             if ex.errno == FileErrorConstant.FileNotFoundErrorCode:
                 log.error('Cannot find Git executable "git".')
             raise EBSCliException(DevToolsMessage.GitCommandError.format(ex.message))
-        
 
-def copy_file(src, dst, quiet = True):
+
+def copy_file(src, dst, quiet=True):
     try:
         if src == dst:
             return
         shutil.copy(src, dst)
     except BaseException as ex:
-        log.error('Encountered an error when copying file from {0} to {1}, because: {2}'.\
+        log.error('Encountered an error when copying file from {0} to {1}, because: {2}'. \
                   format(src, dst, ex))
         if not quiet:
             raise
 
 
-def get_repo_head_hash(quiet = False):
+def get_repo_head_hash(quiet=False):
     try:
         headhash = misc.to_unicode(call(GitDefault.GetHeadHash), locale.getpreferredencoding())
         return headhash.replace(os.linesep, '')
@@ -132,7 +132,7 @@ def get_repo_head_hash(quiet = False):
             return None
         else:
             raise EBSCliException(DevToolsMessage.GitHeadNotExist.format(ex.message))
-    
+
     except (OSError, IOError) as ex:
         log.error('Failed to call git, because "{0}".'.format(ex))
         if quiet:
@@ -144,12 +144,12 @@ def get_repo_head_hash(quiet = False):
             raise EBSCliException(DevToolsMessage.GitCommandError.format(ex.message))
 
 
-def git_aws_push(push_only = False, quiet = False):
+def git_aws_push(push_only=False, quiet=False):
     output = prompt.info if quiet else prompt.result
     cmd = DevToolsDefault.AwsCreateAppVersion if push_only else DevToolsDefault.AwsPush
-    
+
     try:
-        output(misc.to_unicode(call(cmd, quiet=quiet), locale.getpreferredencoding())) 
+        output(misc.to_unicode(call(cmd, quiet=quiet), locale.getpreferredencoding()))
         return True
     except subprocess.CalledProcessError as ex:
         # Git returned with an error code
@@ -158,7 +158,7 @@ def git_aws_push(push_only = False, quiet = False):
             return False
         else:
             raise EBSCliException(DevToolsMessage.PushFail.format(ex.message))
-    
+
     except (OSError, IOError) as ex:
         log.error('Failed to call git, because "{0}".'.format(ex))
         if quiet:
@@ -168,12 +168,12 @@ def git_aws_push(push_only = False, quiet = False):
             if ex.errno == FileErrorConstant.FileNotFoundErrorCode:
                 log.error('Cannot find Git executable "git".')
             raise EBSCliException(DevToolsMessage.GitCommandError.format(ex.message))
-        
 
-def open_url(url, quiet = True):
+
+def open_url(url, quiet=True):
     try:
         webbrowser.open(url)
-    except webbrowser.Error as ex: 
+    except webbrowser.Error as ex:
         log.error('Failed to open URL "{0}" in default browser, because "{1}".'.format(url, ex))
         if not quiet:
             raise

@@ -24,6 +24,7 @@ from .adapters import HTTPAdapter
 from .utils import requote_uri, get_environ_proxies, get_netrc_auth
 
 from .status_codes import codes
+
 REDIRECT_STATI = (codes.moved, codes.found, codes.other, codes.temporary_moved)
 DEFAULT_REDIRECT_LIMIT = 30
 
@@ -74,7 +75,6 @@ def merge_kwargs(local_kwarg, default_kwarg):
 
 
 class SessionRedirectMixin(object):
-
     def resolve_redirects(self, resp, req, stream=False, timeout=None,
                           verify=True, cert=None, proxies=None):
         """Receives a Response. Returns a generator of Responses."""
@@ -207,19 +207,19 @@ class Session(SessionRedirectMixin):
         self.close()
 
     def request(self, method, url,
-        params=None,
-        data=None,
-        headers=None,
-        cookies=None,
-        files=None,
-        auth=None,
-        timeout=None,
-        allow_redirects=True,
-        proxies=None,
-        hooks=None,
-        stream=None,
-        verify=None,
-        cert=None):
+                params=None,
+                data=None,
+                headers=None,
+                cookies=None,
+                files=None,
+                auth=None,
+                timeout=None,
+                allow_redirects=True,
+                proxies=None,
+                hooks=None,
+                stream=None,
+                verify=None,
+                cert=None):
 
         cookies = cookies or {}
         proxies = proxies or {}
@@ -352,7 +352,7 @@ class Session(SessionRedirectMixin):
         :param \*\*kwargs: Optional arguments that ``request`` takes.
         """
 
-        return self.request('PATCH', url,  data=data, **kwargs)
+        return self.request('PATCH', url, data=data, **kwargs)
 
     def delete(self, url, **kwargs):
         """Sends a DELETE request. Returns :class:`Response` object.

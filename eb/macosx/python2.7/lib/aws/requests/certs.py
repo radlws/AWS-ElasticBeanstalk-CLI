@@ -16,10 +16,12 @@ import os.path
 from lib.utility import shell_utils
 from scli.constants import CABundle
 
+
 def where():
     """Return the preferred certificate bundle."""
     # vendored bundle inside Requests
-    return   os.path.join(shell_utils.ori_path(), CABundle.Path, CABundle.Name)
+    return os.path.join(shell_utils.ori_path(), CABundle.Path, CABundle.Name)
+
 
 if __name__ == '__main__':
     print(where())

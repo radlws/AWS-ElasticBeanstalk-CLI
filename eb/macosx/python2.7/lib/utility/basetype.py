@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -26,21 +26,21 @@ class ValuedEnum(dict):
         if name in self.keys():
             return name
         raise AttributeError(u"Item not exists: {0}".format(name))
-    
-    
+
+
     def __setattr__(self, name, value):
         raise AttributeError(u'Enum instance is read only.')
-        
+
 
     def __setitem__(self, key, value):
         raise AttributeError(u'Enum instance is read only.')
-    
+
     def __contains__(self, item):
         return item in self.keys()
-    
+
     def items(self):
         return self.keys()
-    
+
     def order(self, name):
         if self.has_key(name):
             return self[name]
@@ -55,15 +55,14 @@ class ValuedEnum(dict):
         if name1 is None:
             return False
         if name2 is None:
-            return True 
-        
+            return True
+
         if self.order(name1) < self.order(name2):
             return True
         else:
             return False
-    
-    
-            
+
+
 class OrderedEnum(list):
     '''
     Implementation of Enum type using list as base class.
@@ -75,18 +74,18 @@ class OrderedEnum(list):
         if name in self:
             return name
         raise AttributeError(u"Item not exists: {0}".format(name))
-    
-    
+
+
     def __setattr__(self, name, value):
         raise AttributeError(u'Enum instance is read only.')
-        
+
 
     def __setitem__(self, key, value):
         raise AttributeError(u'Enum instance is read only.')
 
     def items(self):
         return self
-    
+
     def order(self, name):
         if name in self:
             return self.index(name)

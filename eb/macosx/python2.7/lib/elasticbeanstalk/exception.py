@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -19,17 +19,16 @@ from lib.aws.exception import AwsServiceException
 
 class EBErrorCode(object):
     '''Elastic Beanstalk error code'''
-    
+
     TooManyApplicationsException = u'TooManyApplicationsException'
     TooManyConfigurationTemplates = u'TooManyConfigurationTemplates'
-    OperationInProgress = u'OperationInProgress'    
-    
+    OperationInProgress = u'OperationInProgress'
+
     SourceBundleDeletion = u'SourceBundleDeletion'
     S3LocationNotInServiceRegion = u'S3LocationNotInServiceRegion'
 
 
 class ElasticBeanstalkException(AwsServiceException):
-    
     def __init__(self, ex):
         if not issubclass(ex.__class__, AwsServiceException):
             raise AttributeError(u'Must initialize from instance of AwsServiceException subclass.')
@@ -37,27 +36,32 @@ class ElasticBeanstalkException(AwsServiceException):
 
 
 class TooManyApplicationsException(ElasticBeanstalkException):
-    pass        
+    pass
+
 
 class TooManyApplicationVersionsException(ElasticBeanstalkException):
     pass
 
+
 class TooManyEnvironmentsException(ElasticBeanstalkException):
-    pass        
+    pass
 
 
 class AlreadyExistException(ElasticBeanstalkException):
-    pass        
+    pass
 
 
 class OperationInProgressException(ElasticBeanstalkException):
     pass
 
+
 class ApplicationHasRunningEnvException(ElasticBeanstalkException):
     pass
 
+
 class SourceBundleDeletionException(ElasticBeanstalkException):
     pass
+
 
 class S3LocationNotInServiceRegionException(ElasticBeanstalkException):
     pass

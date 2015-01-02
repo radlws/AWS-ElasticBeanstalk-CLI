@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#==============================================================================
+# ==============================================================================
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Amazon Software License (the "License"). You may not use
@@ -25,19 +25,19 @@ import re
 
 from http_client import HTTP_GET, HTTP_POST
 from ..utility import misc
- 
 
-log = logging.getLogger('aws') 
+
+log = logging.getLogger('aws')
+
 
 class AWSSignature:
-    
     SigV2 = u'2'
     SigV4 = u'4'
-    
-    def __init__(self, accesskey, secretkey, endpoint, 
-                 region, service_name, api_version, 
-                 signature_version = SigV2, 
-                 terminator = 'aws4_request'):
+
+    def __init__(self, accesskey, secretkey, endpoint,
+                 region, service_name, api_version,
+                 signature_version=SigV2,
+                 terminator='aws4_request'):
         '''
         Constructor
         '''
@@ -46,7 +46,7 @@ class AWSSignature:
         self._endpoint = endpoint
         self._region = region
         self._service_name = service_name
-        self._api_version = api_version        
+        self._api_version = api_version
         self._signature_version = signature_version
         self._terminator = terminator
 
@@ -54,9 +54,9 @@ class AWSSignature:
     def v2_sign(self, verb, request_string):
         # This assumes path is always '/'.
         stringToSign = verb + '\n' + urlparse.urlsplit(self._endpoint)[1] + '\n/\n' + request_string
-    
-        return base64.b64encode(hmac.new(misc.to_bytes(self._secretkey), 
-                                         misc.to_bytes(stringToSign), 
+
+        return base64.b64encode(hmac.new(misc.to_bytes(self._secretkey),
+                                         misc.to_bytes(stringToSign),
                                          hashlib.sha256).digest())
 
 
@@ -64,7 +64,7 @@ class AWSSignature:
         #TODO: Now this assumes path is always '/'.
         formatted_timestamp = timestamp.strftime('%Y%m%dT%H%M%SZ')
         date = timestamp.strftime('%Y%m%d')
-        scope =  date + '/' + self._region + '/' + self._service_name + '/' + self._terminator
+        scope = date + '/' + self._region + '/' + self._service_name + '/' + self._terminator
 
         # Process headers        
         headers['Host'] = urlparse.urlsplit(self._endpoint).netloc
@@ -78,77 +78,76 @@ class AWSSignature:
         canonical_request += (query_string if verb == HTTP_GET else '') + '\n'
         canonical_request += canonical_headers + '\n' + signed_headers + '\n'
         canonical_request += hashlib.sha256(query_string.encode('utf-8') \
-                                            if verb == HTTP_POST else '').hexdigest()
-                                            
+                                                if verb == HTTP_POST else '').hexdigest()
+
         # Generate string to sign                                            
         string_to_sign = 'AWS4-HMAC-SHA256\n' + formatted_timestamp + '\n' + scope + '\n' \
-            + hashlib.sha256(canonical_request.encode('utf-8')).hexdigest()
+                         + hashlib.sha256(canonical_request.encode('utf-8')).hexdigest()
 
         # Generate signing key
         derived_key = hmac.new((u'AWS4' + self._secretkey).encode('utf-8'),
                                date.encode('utf-8'), hashlib.sha256).digest()
-        derived_key = hmac.new(derived_key, 
+        derived_key = hmac.new(derived_key,
                                self._region.encode('utf-8'), hashlib.sha256).digest()
-        derived_key = hmac.new(derived_key, 
+        derived_key = hmac.new(derived_key,
                                self._service_name.encode('utf-8'), hashlib.sha256).digest()
-        derived_key = hmac.new(derived_key, 
+        derived_key = hmac.new(derived_key,
                                u'aws4_request'.encode('utf-8'), hashlib.sha256).digest()
 
         # Sign
-        signature = hmac.new(derived_key, 
+        signature = hmac.new(derived_key,
                              string_to_sign.encode('utf-8'), hashlib.sha256).hexdigest()
-        
+
         # Fill signature into header (recommended way)
         credential = self._accesskey + '/' + scope
         headers['Authorization'] = 'AWS4-HMAC-SHA256 Credential=%s,SignedHeaders=%s,Signature=%s' \
-            % (credential, signed_headers, signature)
+                                   % (credential, signed_headers, signature)
 
         return headers
-        
-            
+
+
     def construct_get_url(self, params, headers):
         host = self._endpoint if self._endpoint.endswith(u'/') else self._endpoint + u'/'
 
         if self._signature_version == self.SigV2:
             query_string = self._generate_v2_query_string(params)
-            
+
             return (misc.to_bytes(host + '?' + query_string + '&Signature=' \
-                                 + urllib.quote(self.v2_sign(HTTP_GET, query_string))),
-                    headers) 
+                                  + urllib.quote(self.v2_sign(HTTP_GET, query_string))),
+                    headers)
 
         elif self._signature_version == self.SigV4:
             timestamp = datetime.utcnow().isoformat()
             query_string = self._generate_v4_query_string(params, timestamp)
-            
+
             return (misc.to_bytes(host + '?' + query_string),
-                    self.v4_sign(HTTP_POST, query_string, headers, self._region, 
+                    self.v4_sign(HTTP_POST, query_string, headers, self._region,
                                  self._service_name, timestamp))
-        
+
         else:
-            raise AttributeError(u'Not supported signature version: "{0}"'.\
+            raise AttributeError(u'Not supported signature version: "{0}"'. \
                                  format(self._signature_version))
-        
-    
-    
+
+
     def construct_post_data(self, params, headers):
 
         if self._signature_version == self.SigV2:
             query_string = self._generate_v2_query_string(params)
-            
+
             return (misc.to_bytes(query_string + '&Signature=' \
-                                 + urllib.quote(self.v2_sign(HTTP_POST, query_string))),
+                                  + urllib.quote(self.v2_sign(HTTP_POST, query_string))),
                     headers)
-            
+
         elif self._signature_version == self.SigV4:
             timestamp = datetime.utcnow()
             query_string = self._generate_v4_query_string(params, timestamp.isoformat())
             return (query_string,
-                    self.v4_sign(HTTP_POST, query_string, headers, self._region, 
+                    self.v4_sign(HTTP_POST, query_string, headers, self._region,
                                  self._service_name, timestamp))
         else:
-            raise AttributeError(u'Not supported signature version: "{0}"'.\
+            raise AttributeError(u'Not supported signature version: "{0}"'. \
                                  format(self._signature_version))
-    
+
 
     def _generate_v2_query_string(self, params):
         data = dict(params)
@@ -158,7 +157,7 @@ class AWSSignature:
         data[u'Timestamp'] = datetime.utcnow().isoformat()
         data[u'SignatureMethod'] = u'HmacSHA256'
         data[u'ContentType'] = u'JSON'
-        return self._construct_query(data)        
+        return self._construct_query(data)
 
 
     def _generate_v4_query_string(self, params, timestamp):
@@ -166,10 +165,9 @@ class AWSSignature:
         data[u'Version'] = self._api_version
         data[u'Timestamp'] = timestamp
         data[u'ContentType'] = u'JSON'
-        return self._construct_query(data)        
-        
-       
-    
+        return self._construct_query(data)
+
+
     def _canonicalize_uri(self, uri):
         split = urlparse.urlsplit(uri)
         if not split.path:
@@ -196,8 +194,8 @@ class AWSSignature:
 
     def _construct_query(self, params):
         if not params:
-            return ''        
-        
+            return ''
+
         ret_str = ''
         for k, vs in sorted(params.iteritems(), key=operator.itemgetter(0)):
             if isinstance(vs, list):
@@ -208,7 +206,7 @@ class AWSSignature:
                 if ret_str:
                     ret_str += '&'
                 ret_str += urllib.quote(misc.to_bytes(k), safe='~') \
-                            + '=' + urllib.quote(misc.to_bytes(vs), safe='~')
+                           + '=' + urllib.quote(misc.to_bytes(vs), safe='~')
 
         return ret_str        
     
