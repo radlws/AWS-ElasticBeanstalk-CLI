@@ -41,7 +41,7 @@ class RdsClient(object):
     '''
     Web service client for RDS
     '''
-    _signature_version = AWSSignature.SigV2
+    _signature_version = AWSSignature.SigV4
     _api_version = '2012-04-23'
     _service_name = 'rds'
 

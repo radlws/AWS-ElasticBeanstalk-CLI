@@ -18,7 +18,7 @@
 from lib.utility.basetype import ValuedEnum
 from lib.utility.basetype import OrderedEnum
 
-EbCliVersion = 'v2.6.0'
+EbCliVersion = 'v2.6.4'
 
 class Key(object):
     Default = 'default'
@@ -163,6 +163,7 @@ ServiceRegion = OrderedEnum([
     'UsWest1',
     'UsWest2',
     'EuWest1',
+    'EuCentral1',
     'ApNortheast1',
     'ApSoutheast1',
     'ApSoutheast2',
@@ -174,6 +175,7 @@ AvailableServiceRegion = [
    ServiceRegion.UsWest2,
    ServiceRegion.UsWest1,
    ServiceRegion.EuWest1,
+   ServiceRegion.EuCentral1,   
    ServiceRegion.ApSoutheast1,
    ServiceRegion.ApNortheast1,
    ServiceRegion.ApSoutheast2,
@@ -186,6 +188,7 @@ ServiceRegionName = {
     ServiceRegion.ApSoutheast1 : 'Asia Pacific (Singapore)',
     ServiceRegion.ApSoutheast2 : 'Asia Pacific (Sydney)',
     ServiceRegion.EuWest1: 'EU West (Ireland)',
+    ServiceRegion.EuCentral1: 'EU Central (Frankfurt)',
     ServiceRegion.SaEast1: 'South America (Sao Paulo)',
     ServiceRegion.UsEast1 : 'US East (Virginia)',
     ServiceRegion.UsWest1 : 'US West (North California)',
@@ -196,7 +199,8 @@ ServiceRegionId = {
     ServiceRegion.ApNortheast1 : 'ap-northeast-1',
     ServiceRegion.ApSoutheast1 : 'ap-southeast-1',
     ServiceRegion.ApSoutheast2 : 'ap-southeast-2',
-    ServiceRegion.EuWest1: 'eu-west-1',    
+    ServiceRegion.EuWest1: 'eu-west-1',
+    ServiceRegion.EuCentral1: 'eu-central-1',
     ServiceRegion.SaEast1: 'sa-east-1',
     ServiceRegion.UsEast1 : 'us-east-1',
     ServiceRegion.UsWest1 : 'us-west-1',
@@ -208,6 +212,7 @@ ServiceEndpoint = {
     ServiceRegion.ApSoutheast1 : 'https://elasticbeanstalk.ap-southeast-1.amazonaws.com',
     ServiceRegion.ApSoutheast2 : 'https://elasticbeanstalk.ap-southeast-2.amazonaws.com',
     ServiceRegion.EuWest1: 'https://elasticbeanstalk.eu-west-1.amazonaws.com',
+    ServiceRegion.EuCentral1: 'https://elasticbeanstalk.eu-central-1.amazonaws.com',
     ServiceRegion.SaEast1: 'https://elasticbeanstalk.sa-east-1.amazonaws.com',
     ServiceRegion.UsEast1 : 'https://elasticbeanstalk.us-east-1.amazonaws.com',
     ServiceRegion.UsWest1 : 'https://elasticbeanstalk.us-west-1.amazonaws.com',
@@ -215,25 +220,27 @@ ServiceEndpoint = {
 }
 
 SnippetBucket = {
-    ServiceRegion.ApNortheast1 : 'https://s3.amazonaws.com/elasticbeanstalk-env-resources-ap-northeast-1/eb_snippets',
-    ServiceRegion.ApSoutheast1 : 'https://s3.amazonaws.com/elasticbeanstalk-env-resources-ap-southeast-1/eb_snippets',
-    ServiceRegion.ApSoutheast2 : 'https://s3.amazonaws.com/elasticbeanstalk-env-resources-ap-southeast-2/eb_snippets',
-    ServiceRegion.EuWest1 : 'https://s3.amazonaws.com/elasticbeanstalk-env-resources-eu-west-1/eb_snippets',
-    ServiceRegion.SaEast1 : 'https://s3.amazonaws.com/elasticbeanstalk-env-resources-sa-east-1/eb_snippets',
+    ServiceRegion.ApNortheast1 : 'https://s3-ap-northeast-1.amazonaws.com/elasticbeanstalk-env-resources-ap-northeast-1/eb_snippets',
+    ServiceRegion.ApSoutheast1 : 'https://s3-ap-southeast-1.amazonaws.com/elasticbeanstalk-env-resources-ap-southeast-1/eb_snippets',
+    ServiceRegion.ApSoutheast2 : 'https://s3-ap-southeast-2.amazonaws.com/elasticbeanstalk-env-resources-ap-southeast-2/eb_snippets',
+    ServiceRegion.EuWest1 : 'https://s3-eu-west-1.amazonaws.com/elasticbeanstalk-env-resources-eu-west-1/eb_snippets',
+    ServiceRegion.EuCentral1: 'https://s3.eu-central-1.amazonaws.com/elasticbeanstalk-env-resources-eu-central-1/eb_snippets',
+    ServiceRegion.SaEast1 : 'https://s3-sa-east-1.amazonaws.com/elasticbeanstalk-env-resources-sa-east-1/eb_snippets',
     ServiceRegion.UsEast1 : 'https://s3.amazonaws.com/elasticbeanstalk-env-resources-us-east-1/eb_snippets',
-    ServiceRegion.UsWest1 : 'https://s3.amazonaws.com/elasticbeanstalk-env-resources-us-west-1/eb_snippets',
-    ServiceRegion.UsWest2 : 'https://s3.amazonaws.com/elasticbeanstalk-env-resources-us-west-2/eb_snippets',
+    ServiceRegion.UsWest1 : 'https://s3-us-west-1.amazonaws.com/elasticbeanstalk-env-resources-us-west-1/eb_snippets',
+    ServiceRegion.UsWest2 : 'https://s3-us-west-2.amazonaws.com/elasticbeanstalk-env-resources-us-west-2/eb_snippets',
 }
 
 PolicyBucket = {
-    ServiceRegion.ApNortheast1 : 'https://elasticbeanstalk-env-resources-ap-northeast-1.s3.amazonaws.com/eb_policies',
-    ServiceRegion.ApSoutheast1 : 'https://elasticbeanstalk-env-resources-ap-southeast-1.s3.amazonaws.com/eb_policies',
-    ServiceRegion.ApSoutheast2 : 'https://elasticbeanstalk-env-resources-ap-southeast-2.s3.amazonaws.com/eb_policies',
-    ServiceRegion.EuWest1 : 'https://elasticbeanstalk-env-resources-eu-west-1.s3.amazonaws.com/eb_policies',
-    ServiceRegion.SaEast1 : 'https://elasticbeanstalk-env-resources-sa-east-1.s3.amazonaws.com/eb_policies',
+    ServiceRegion.ApNortheast1 : 'https://s3-ap-northeast-1.amazonaws.com/elasticbeanstalk-env-resources-ap-northeast-1/eb_policies',
+    ServiceRegion.ApSoutheast1 : 'https://s3-ap-southeast-1.amazonaws.com/elasticbeanstalk-env-resources-ap-southeast-1/eb_policies',
+    ServiceRegion.ApSoutheast2 : 'https://s3-ap-southeast-2.amazonaws.com/elasticbeanstalk-env-resources-ap-southeast-2/eb_policies',
+    ServiceRegion.EuWest1 : 'https://s3-eu-west-1.amazonaws.com/elasticbeanstalk-env-resources-eu-west-1/eb_policies',
+    ServiceRegion.EuCentral1: 'https://s3.eu-central-1.amazonaws.com/elasticbeanstalk-env-resources-eu-central-1/eb_policies',
+    ServiceRegion.SaEast1 : 'https://s3-sa-east-1.amazonaws.com/elasticbeanstalk-env-resources-sa-east-1/eb_policies',
     ServiceRegion.UsEast1 : 'https://s3.amazonaws.com/elasticbeanstalk-env-resources-us-east-1/eb_policies',
-    ServiceRegion.UsWest1 : 'https://elasticbeanstalk-env-resources-us-west-1.s3.amazonaws.com/eb_policies',
-    ServiceRegion.UsWest2 : 'https://elasticbeanstalk-env-resources-us-west-2.s3.amazonaws.com/eb_policies',
+    ServiceRegion.UsWest1 : 'https://s3-us-west-1.amazonaws.com/elasticbeanstalk-env-resources-us-west-1/eb_policies',
+    ServiceRegion.UsWest2 : 'https://s3-us-west-2.amazonaws.com/elasticbeanstalk-env-resources-us-west-2/eb_policies',
 }
 
 DevToolsEndpoint = {
@@ -241,6 +248,7 @@ DevToolsEndpoint = {
     ServiceRegion.ApSoutheast1 : 'git.elasticbeanstalk.ap-southeast-1.amazonaws.com',
     ServiceRegion.ApSoutheast2 : 'git.elasticbeanstalk.ap-southeast-2.amazonaws.com',
     ServiceRegion.EuWest1: 'git.elasticbeanstalk.eu-west-1.amazonaws.com',
+    ServiceRegion.EuCentral1: '',
     ServiceRegion.SaEast1: 'git.elasticbeanstalk.sa-east-1.amazonaws.com',
     ServiceRegion.UsEast1 : 'git.elasticbeanstalk.us-east-1.amazonaws.com',
     ServiceRegion.UsWest1 : 'git.elasticbeanstalk.us-west-1.amazonaws.com',
@@ -263,6 +271,7 @@ class DevToolsDefault(object):
     VersionNameMask = 'git-{0}-{1}'
     
     AwsPush = ['git', 'aws.push']
+    AwsCreateAppVersion = ['git', 'aws.createapplicationversion']
     
     
 #----------------------------------------------
@@ -306,6 +315,7 @@ RdsEndpoint = {
     ServiceRegion.ApSoutheast1 : 'https://rds.ap-southeast-1.amazonaws.com',
     ServiceRegion.ApSoutheast2 : 'https://rds.ap-southeast-2.amazonaws.com',
     ServiceRegion.EuWest1: 'https://rds.eu-west-1.amazonaws.com',
+    ServiceRegion.EuCentral1: 'https://rds.eu-central-1.amazonaws.com',
     ServiceRegion.SaEast1: 'https://rds.sa-east-1.amazonaws.com',
     ServiceRegion.UsEast1 : 'https://rds.amazonaws.com',
     ServiceRegion.UsWest1 : 'https://rds.us-west-1.amazonaws.com',
@@ -651,6 +661,7 @@ LocalOptionSettings = {
 }
 
 OptionSettingContainerPrefix = 'aws:elasticbeanstalk:container'
+OptionSettingTemplatePrefix = 'aws:cloudformation:template'
 
 class OptionSettingApplicationEnvironment(object): 
     Namespace = 'aws:elasticbeanstalk:application:environment'

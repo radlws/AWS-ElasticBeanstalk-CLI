@@ -21,5 +21,4 @@ about AWS Elastic Beanstalk, go to
 http://docs.amazonwebservices.com/elasticbeanstalk/latest/dg/Welcome.html
 in the AWS Elastic Beanstalk Developer Guide.
 
-NOTE: AWS DevTools requires curl 7.21.4 or later and OpenSSL 0.9.8r or
-later.
+NOTE: AWS DevTools requires boto 2.7.0 or later
