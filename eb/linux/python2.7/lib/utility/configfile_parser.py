@@ -6,7 +6,7 @@
 # this file except in compliance with the License. A copy of the License is
 # located at
 #
-#       http://aws.amazon.com/asl/
+# http://aws.amazon.com/asl/
 #
 # or in the "license" file accompanying this file. This file is distributed on
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
@@ -25,7 +25,7 @@ from scli.constants import ServiceDefault
 
 
 class SectionedConfigParser(_RawConfigParser):
-    ''' 
+    '''
     Derived ConfigParser.RawConfigParser to support Unicode write and case sensitive key name.
     '''
 
@@ -40,6 +40,9 @@ class SectionedConfigParser(_RawConfigParser):
         return _RawConfigParser.__init__(self, allow_no_value=True)
 
     def read(self, pathfilename):
+        #seb: expand path to allow using homedir and relative paths
+        pathfilename = os.path.realpath(os.path.expanduser(pathfilename))
+
         with codecs.open(pathfilename, 'r', encoding=ServiceDefault.CHAR_CODEC) as input_file:
             _RawConfigParser.readfp(self, input_file)
 
@@ -62,13 +65,16 @@ class SectionedConfigParser(_RawConfigParser):
 
 
 class NoSectionConfigParser(_RawConfigParser):
-    ''' 
+    '''
     Derived ConfigParser.RawConfigParser to access no section config file.
-    Also support Unicode write 
+    Also support Unicode write
     '''
     _default_section = u'defaultsection'
 
     def read(self, pathfilename):
+        #seb: expand path to allow using homedir and relative paths
+        pathfilename = os.path.realpath(os.path.expanduser(pathfilename))
+
         with codecs.open(pathfilename, 'r', encoding=ServiceDefault.CHAR_CODEC) as input_file:
             config_pairs = input_file.read()
         with _closing(_StringIO(u"[{0}]{1}{2}".format(self._default_section,
@@ -97,4 +103,4 @@ class NoSectionConfigParser(_RawConfigParser):
         return _RawConfigParser.remove_option(self, self._default_section, option)
 
     def optionxform(self, optionstr):
-        return optionstr                
+        return optionstr
