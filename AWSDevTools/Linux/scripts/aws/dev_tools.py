@@ -149,8 +149,12 @@ class DevTools:
         bkt = self.s3.get_bucket(bucket_name)
         print "Uploading git archive to S3 bucket '%s'..." % bucket_name
         key = boto.s3.key.Key(bkt, name)
-        key.set_contents_from_filename(archived_file)
+        key.set_contents_from_filename(archived_file, cb=self.upload_progress_cb, num_cb=15)
         print "Upload done."
+
+    @staticmethod
+    def upload_progress_cb(so_far, total):
+        print '{} bytes transferred out of {} ({:.0f}%)'.format(so_far, total, float(so_far)/total * 100)
 
     def update_environment(self, environment, version_label):
         print "Sending environment update signal..."
