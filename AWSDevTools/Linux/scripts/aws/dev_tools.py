@@ -123,6 +123,8 @@ class DevTools:
         epoch = int(time.time() * 1000)
         commit_id = self.commit_id(commit)
         label = "git-{0}-{1}".format(commit_id, epoch)
+        #TODO: see if commit has tag and use instead,
+        ## http://stackoverflow.com/questions/1474115/find-tag-information-for-a-given-commit
         return label
 
     def bucket_name(self):
