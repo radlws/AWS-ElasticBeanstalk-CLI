@@ -119,12 +119,17 @@ class DevTools:
         except (CalledProcessError, OSError) as e:
             sys.exit("Error: Cannot lookup current branch")
 
-    def version_label(self, commit):
-        epoch = int(time.time() * 1000)
-        commit_id = self.commit_id(commit)
-        label = "git-{0}-{1}".format(commit_id, epoch)
-        #TODO: see if commit has tag and use instead,
-        ## http://stackoverflow.com/questions/1474115/find-tag-information-for-a-given-commit
+    def version_label(self, commit, tag):
+
+        if tag and '-' in tag:
+            label = "{0}".format(tag)
+        else:
+            if tag:
+                tag = '-' + tag
+            epoch = int(time.time() * 1000)
+            commit_id = self.commit_id(commit)
+            label = "git-{0}{1}".format(commit_id, epoch, tag)
+
         return label
 
     def bucket_name(self):
@@ -151,7 +156,7 @@ class DevTools:
         bkt = self.s3.get_bucket(bucket_name)
         print "Uploading git archive to S3 bucket '%s'..." % bucket_name
         key = boto.s3.key.Key(bkt, name)
-        key.set_contents_from_filename(archived_file, cb=self.upload_progress_cb, num_cb=50)
+        key.set_contents_from_filename(archived_file, cb=self.upload_progress_cb, num_cb=100)
         print "Upload done."
 
     @staticmethod
@@ -208,13 +213,13 @@ class DevTools:
         self.create_eb_application_version(commit_message, bucket_name, archived_file_name, version_label)
         shutil.rmtree(archived_file_path)
 
-    def push_changes(self, env, commit):
+    def push_changes(self, env, commit, tag=None):
         if not env:
             env = self.environment() or self.beanstalk_config.environment_name()
         if not commit:
             commit = "HEAD"
 
         print "Preparing to update the AWS Elastic Beanstalk environment %s..." % env
-        version_label = self.version_label(commit)
+        version_label = self.version_label(commit, tag=None)
         self.create_application_version(env, commit, version_label)
         self.update_environment(env, version_label)
