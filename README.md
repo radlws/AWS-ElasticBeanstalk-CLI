@@ -2,7 +2,7 @@ Eb Command Line Interface Updated
 ===============
 
 This package contains an updated command line interface (CLI), called eb, for AWS Elastic Beanstalk. 
-This revision is based on the original [https://aws.amazon.com/code/6752709412171743](EB CLI 2.6.4 from Amazon) with many small improvements and bug fixes. 
+This revision is based on the original [EB CLI 2.6.4 from Amazon](https://aws.amazon.com/code/6752709412171743) with many small improvements and bug fixes. 
 AWS Elastic Beanstalk provides easy application deployment and management utilizing various Amazon 
 Web Services resources that are created on your behalf. Eb helps you create and deploy your application 
 in minutes.
